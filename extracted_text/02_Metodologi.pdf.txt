@@ -1,0 +1,651 @@
+=== FILE: 02_Metodologi.pdf (Pages: 50) ===
+
+--- PAGE 1 ---
+Desain & Aplikasi IoT
+Metodologi Desain Sistem IoT
+Pertemuan 2 · Sepuluh Langkah Desain Sistem IoT
+Muhtadin
+
+--- PAGE 2 ---
+Desain & Aplikasi IoT
+Di Mana Kita Sekarang
+•  Enam blok bangunan sistem IoT: penginderaan → node → konektivitas → gateway → platform → aplikasi
+•  Minggu ini kita belum menaiki blok mana pun
+•  Kita mengerjakan hal yang mendahului semuanya: memutuskan sistem apa yang sebenarnya perlu dibangun
+2
+Metodologi 
+Desain
+ 1. Penginderaan
+ 2. Node
+ 3. Konektivitas
+ 4. Gateway / 
+Edge
+ 5. Platform
+ 6. Aplikasi
+umpan balik → aktuator
+
+--- PAGE 3 ---
+Desain & Aplikasi IoT
+Masalah Hari Ini
+Air di lantai 11 habis setiap Jumat siang.
+Pompa sudah diganti dua kali tahun ini.
+Tidak ada yang tahu kenapa.
+Anda diminta membangun sistem IoT untuk mengatasinya. Dari mana Anda mulai?
+3
+
+--- PAGE 4 ---
+Desain & Aplikasi IoT
+BAGIAN 1
+Mengapa perlu metodologi?
+Dan mengapa insting rekayasa Anda justru berbahaya di sini
+4
+
+--- PAGE 5 ---
+Desain & Aplikasi IoT
+Cara Kita Biasanya Merancang
+•  Alurnya: "Pakai ESP32" → "Sensor ultrasonik" → "Kirim ke Firebase" → "Bikin app" → … lalu apa?
+•  Siapa yang akan memakai sistem ini setiap hari?
+•  Apa yang harus terjadi ketika Wi-Fi gedung mati?
+•  Berapa lama sistem harus bertahan tanpa disentuh?
+•  Bagaimana kita tahu sistem ini berhasil?
+•  Siapa yang bertanggung jawab kalau pompa terbakar?
+5
+
+--- PAGE 6 ---
+Desain & Aplikasi IoT
+Kegagalan Akibat Melewati Desain yang Lengkap
+Kegagalan Gejalanya Akar penyebabnya
+Sistem benar untuk 
+masalah salah
+Demo mulus, tak ada yang memakai setelah dua 
+minggu Tujuan tak pernah dirumuskan bersama pengguna
+Baterai habis dalam dua 
+minggu Node harus dipanjat dan diisi ulang terus Interval sampling ditentukan setelah perangkat keras dipilih
+Sistem mati saat internet 
+mati Pompa berhenti bekerja saat gangguan jaringan Penempatan logika tak pernah diputuskan secara sadar
+Tidak bisa diduplikasi Bekerja di satu gedung, gagal pada sepuluh Gedung lain Skala tak pernah jadi kebutuhan tertulis
+6
+
+--- PAGE 7 ---
+Desain & Aplikasi IoT
+Metodologi Adalah Urutan Pertanyaan
+Yang keliru dipahami Yang sebenarnya
+Sepuluh dokumen 
+yang harus dibuat Sepuluh pertanyaan yang harus dijawab
+Kerjakan berurutan 
+sampai selesai Kembali ke langkah sebelumnya seringkali diperlukan
+Untuk proyek besar 
+saja
+Untuk proyek kecil, jawabannya cukup satu kalimat per 
+langkah
+Memperlambat 
+pekerjaan
+Memindahkan kesalahan dari akhir ke awal proyek, di 
+situ harganya murah
+7
+
+--- PAGE 8 ---
+Desain & Aplikasi IoT
+Sepuluh Langkah Bahga & Madisetti
+# Langkah Pertanyaan yang dijawabnya
+1 Purpose & Requirements Untuk apa sistem ini ada, dan apa syaratnya?
+2 Process Specification Bagaimana perilakunya, langkah demi langkah?
+3 Domain Model Apa saja benda dan pelaku di dunia masalah ini?
+4 Information Model Informasi apa yang disimpan tentang tiap benda?
+5 Service Specification Layanan apa yang berjalan, dan di mana?
+6 IoT Level Specification Sebesar apa arsitekturnya perlu tumbuh?
+7 Functional View Fungsi apa yang dibutuhkan tiap kelompok?
+8 Operational View Teknologi konkret apa yang dipakai?
+9 Device & Component Integration Bagaimana merakitnya?
+10 Application Development Bagaimana pengguna memakainya?
+LANGKAH 1–5 = APA & MENGAPA (bebas teknologi)  ·  6 –8 = BAGAIMANA (arsitektur mengikat)  ·  9 –10 = PEMBUATAN.    Nama merek 
+pertama baru boleh muncul di langkah 8.
+8
+
+--- PAGE 9 ---
+Desain & Aplikasi IoT
+BAGIAN 2
+Studi kasus
+Masalah Tandon Air
+9
+
+--- PAGE 10 ---
+Desain & Aplikasi IoT
+Apa yang Sebenarnya Terjadi di Gedung Itu
+Hasil survei lapangan
+Kondisi saat ini
+•  T angkiatap 2.000 L diisi pompa dari tandon bawah 5.000 L
+•  Pompa dikendalikan saklar pelampung mekanis, sudah dua kali 
+rusak tahun ini
+•  Petugas harus naik ke atap untuk memeriksa bila ada keluhan
+Keluhan yang tercatat
+•  Air habis di lantai atas pada jam sibuk
+•  Pompa terbakar dua kali, diduga menyala saat tandon bawah
+kosong (dry run)
+•  T agihanair naik 18% tanpa penjelasan, dugaan kebocoran, tanpa
+bukti
+•  Tidak ada data sama sekali: tak ada yang tahu berapa liter dipakai
+per hari
+10
+
+--- PAGE 11 ---
+Desain & Aplikasi IoT
+Purpose & Requirements · Process Specification
+LANGKAH 1 & 2   ·   Zona APA dan MENGAPA — belum ada teknologi
+12
+
+--- PAGE 12 ---
+Desain & Aplikasi IoT
+Langkah 1a — Purpose dan Behavior
+Ditulis dalam bahasa pengguna, bukan bahasa insinyur
+Purpose
+•  "Sistem ini menjamin ketersediaan air bersih di seluruh lantai pada 
+jam sibuk, melindungi pompa dari kerusakan akibat menyala tanpa
+air, dan mendeteksi kebocoran secara dini tanpa petugas perlu
+naik ke atap."
+Behavior
+•  Pompa menyala bila tangki atap < 30%; berhenti bila ≥ 90%
+•  Pompa tidak boleh menyala bila tandon bawah < 20% (proteksi dry 
+run)
+•  Petugas dapat mengambil alih, dengan batas waktu kembali
+otomatis
+•  Peringatan: level < 15%; pompa nyala > 30 menit tanpa naik ≥ 5%; 
+pemakaian pukul 00–04 > 100 L
+13
+
+--- PAGE 13 ---
+Desain & Aplikasi IoT
+Langkah 1b — Empat Kategori Kebutuhan
+Kategori Untuk kasus tangki air
+System Management Pemantauan & kendali jarak jauh; status pompa terlihat; riwayat 13 bulan
+Data Analysis Lokal: keputusan pompa dan interlock. Cloud: tren pemakaian, deteksi kebocoran, prediksi habis
+Application Deployment Aplikasi web berbasis cloud, dapat diakses dari ponsel petugas
+Security Autentikasi; hanya petugas sarana boleh mengambil alih; komunikasi terenkripsi; identitas unik per perangkat; setiap pengambilalihan tercatat
+14
+
+--- PAGE 14 ---
+Desain & Aplikasi IoT
+Fungsional vs Nonfungsional
+Yang menggalkan proyek IoT hampir selalu yang nonfungsional
+Kebutuhan fungsional Kebutuhan nonfungsional
+Menjawab Sistem melakukan apa Sistem melakukannya sebaik apa
+Contoh Pompa menyala bila level < 30% Keputusan interlock selesai ≤ 2 detik
+Bila gagal Fitur tidak ada Fitur ada tapi tidak berguna
+Diuji dengan Ya / tidak Angka dan pengukuran
+Pompa yang menyala 45 detik setelah tandon kosong secara fungsional benar — dan secara praktis sudah terlambat.
+15
+
+--- PAGE 15 ---
+Desain & Aplikasi IoT
+Empat Kendala Nonfungsional yang sering ada pada IoT
+Setiap kebutuhan wajib datang berpasangan dengan cara mengujinya
+Kendala Untuk kasus tangki air Cara mengujinya
+Energi Node atap bertahan ≥ 12 bulan; hidup ≥ 7 hari tanpa matahari Ukur arus rata-rata, hitung, lalu uji lapangan
+Latensi Interlock dry run memutuskan dalam ≤ 2 detik Catat waktu antara ambang terlampaui dan relay berubah
+Ketersediaan Mode otomatis jalan ≥ 72 jam saat internet mati; data tidak hilang Cabut WAN, tunggu, periksa kelengkapan data
+Biaya ≤ Rp 750.000 per node; gateway ≤ Rp 2.000.000 Rekapitulasi nota
+Tambahan kasus ini: akurasi level ± 2 cm · ketersediaan data ≥ 99% per bulan
+16
+
+--- PAGE 16 ---
+Desain & Aplikasi IoT
+Latihan 1
+•  Pilih satu kebutuhan nonfungsional untuk sistem tangki air yang 
+BELUM ada di slide sebelumnya
+•  Format: [Apa] harus [sebaik apa, dengan angka] [dalam kondisi apa], 
+diuji dengan [cara mengukurnya]
+CONTOH YANG BENAR
+"Sensor level harus tetap akurat ± 2 cm pada suhu tangki 25–50 
+°C, diuji dengan membandingkan terhadap meteran pita ukur 
+pada lima ketinggian."
+CONTOH YANG SALAH
+"Sistem harus andal dan mudah digunakan."
+17
+
+--- PAGE 17 ---
+Desain & Aplikasi IoT
+Langkah 2 — Process Specification
+•  Satu diagram per use case, bukan satu diagram raksasa untuk seluruh sistem
+•  Bentuk baku: belah ketupat untuk keputusan, persegi untuk aksi
+•  Belum ada nama sensor, protokol, atau perangkat
+•  Setiap cabang harus punya ujung, termasuk cabang yang gagal
+•  Use case kasus kita: (1) pengisian otomatis (2) pengambilalihan manual  (3) deteksi kebocoran malam (4) deteksi pompa
+bermasalah
+18
+
+--- PAGE 18 ---
+Desain & Aplikasi IoT
+Diagram Proses — Pengisian Otomatis
+Perhatikan dua kotak merah: jalur kegagalan
+19
+
+--- PAGE 19 ---
+Desain & Aplikasi IoT
+Kesalahan Khas pada Langkah 1–2
+Kesalahan Perbaikannya
+Purpose ditulis dalam bahasa teknis Tulis untuk pengguna; uji dengan membacakannya ke orang non-teknis
+Kebutuhan tanpa angka Setiap nonfungsional wajib punya angka dan cara uji
+Nama komponen bocor ke langkah 1 Tunda sampai langkah 8
+Flowchart raksasa untuk seluruh sistem Satu diagram per use case
+Hanya menggambar jalur yang berhasil Setiap cabang gagal harus punya ujung
+Kebutuhan dikarang sendiri tanpa bertanya Wawancarai pengguna — 20 menit menghemat berminggu-minggu
+20
+
+--- PAGE 20 ---
+Desain & Aplikasi IoT
+Domain Model · Information Model · Service Specification
+LANGKAH 3, 4 & 5   ·   Masih zona APA — teknologi masih belum perlu disebutkan
+21
+
+--- PAGE 21 ---
+Desain & Aplikasi IoT
+Langkah 3 — Domain Model
+Entitas Artinya Tanda yang nampak
+Physical Entity Benda nyata yang kita pedulikan Bisa saya sentuh?
+Virtual Entity Representasi digital dari benda itu Ada di basis data?
+Device Perangkat yang menjembatani fisik dan digital Punya catu daya?
+Resource Komponen perangkat lunak — on-device atau network Berupa kode?
+Service Antarmuka yang membuka akses ke resource Bisa dipanggil pihak lain?
+Physical Entity BUKAN Device. Tangki adalah benda yang kita pedulikan. Sensor hanyalah alat untuk mengetahuinya.
+22
+
+--- PAGE 22 ---
+Desain & Aplikasi IoT
+Domain Model — Tangki Air Gedung ITS
+Jenis Kasus Tandon Air
+Physical Entity Tangki Atap · Tandon Bawah · Pompa · Gedung · Jaringan pipa
+Virtual Entity TangkiAtap#GKB-01 · TandonBawah#GKB-01 · Pompa#GKB-01 · Gedung#GKB
+Device Node-Atap (ukur level atas) · Node-Pompa (ukur tandon bawah, ukur arus, nyalakan pompa)
+Resource — on-device Driver sensor level · driver relay · driver sensor arus · penjadwal tidur · buffer lokal
+Resource — network Broker pesan · basis data deret waktu · layanan notifikasi
+Service LevelSensing · PumpControl · DryRunInterlock · ModeControl · LeakDetection · History
+Hubungan: Node -Atap MENGAMATI TangkiAtap · Node -Pompa MENGAMATI TandonBawah dan MENGENDALIKAN Pompa
+23
+
+--- PAGE 23 ---
+Desain & Aplikasi IoT
+Langkah 4 — Information Model
+TangkiAtap#GKB-01
+•  id, gedung, lokasi — statis
+•  kapasitas_liter, tinggi_cm — statis
+•  level_cm — dinamis
+•  volume_liter, persen — turunan
+•  waktu_ukur — dinamis
+•  status_sensor — normal / di luar jangkauan / tidak merespons
+Pompa#GKB-01
+•  id, daya_watt — statis
+•  status — ON / OFF
+•  mode — otomatis / manual
+•  arus_ampere — dinamis
+•  jam_operasi_kumulatif— dinamis
+•  penyebab_perubahan_terakhir— otomatis / manual oleh 
+<pengguna>
+24
+
+--- PAGE 24 ---
+Desain & Aplikasi IoT
+Domain Model vs Information Model
+Domain Model (Langkah 3) Information Model (Langkah 4)
+Menjawab Apa saja yang ada di dunia ini? Apa yang kita ketahui tentang masing -masing?
+Isinya Entitas dan hubungan Atribut dan jenisnya
+Analogi Daftar pemeran sebuah film Kartu karakter tiap pemeran
+Kasus kita "Ada tangki, tandon, pompa, gedung" "Tangki punya level, kapasitas, status sensor"
+Keduanya BELUM berbicara soal penyimpanan. Skema basis data baru lahir di langkah 8.
+25
+
+--- PAGE 25 ---
+Desain & Aplikasi IoT
+Langkah 5 — Service Specification
+•  Nama dan apa yang dikerjakannya
+•  Tipe: berjalan di perangkat (native) atau di jaringan (REST / pub-sub)
+•  Masukan dan keluaran
+•  Endpoint — topik atau alamat sumber daya
+•  Jadwal — periodik, event-driven, atau on-demand
+•  Prasyarat dan akibat — apa yang harus benar sebelum dijalankan, apa yang berubah setelahnya
+Di sinilah pilihan MOM versus REST dari minggu lalu benar -benar diputuskan.
+26
+
+--- PAGE 26 ---
+Desain & Aplikasi IoT
+Service Specification — Tangki Air
+Telemetri → MOM · Konfigurasi & riwayat → REST · Keselamatan → lokal
+Layanan Tipe Endpoint Jadwal
+LevelSensing Native, Node-Atap pub its/gkb01/tank/roof/level 15 mnt idle · 10 dtk saat pompa ON
+GroundLevelSensing Native, Node-Pompa pub its/gkb01/tank/ground/level 60 dtk · 5 dtk saat pompa ON
+DryRunInterlock Native, Node-Pompa LOKAL — tidak lewat jaringan tiap 1 detik
+PumpControl Native, Node-Pompa sub .../pump/cmd · pub .../pump/state event-driven
+PumpHealth Native, Node-Pompa pub its/gkb01/pump/health 60 dtk saat ON
+ModeControl REST, cloud GET/PUT /buildings/gkb/pump/mode on-demand
+LeakDetection Analitik cloud pub its/gkb01/alert tiap hari 05.00
+History REST, cloud GET /buildings/gkb/tank/roof/history on-demand
+27
+
+--- PAGE 27 ---
+Desain & Aplikasi IoT
+Latihan - 2
+•  Tambahkan SATU layanan yang belum ada di slide sebelumnya, lengkap dengan enam bidangnya
+•  Petunjuk — hal yang belum tertangani:
+•  Bagaimana ambang 30% / 90% diubah dari jarak jauh?
+•  Bagaimana kita tahu Node-Atap masih hidup?
+•  Bagaimana firmware node diperbarui?
+•  Bagaimana petugas menerima notifikasi di ponselnya?
+28
+
+--- PAGE 28 ---
+Desain & Aplikasi IoT
+Apa yang Sudah Kita Lakukan?
+Langkah Hasilnya
+1 1 paragraf tujuan · 4 kategori kebutuhan · 6 nonfungsional terukur
+2 4 use case · 1 diagram proses lengkap dengan jalur gagal
+3 5 entitas fisik · 4 entitas virtual · 2 perangkat · 8 layanan
+4 Dua kartu atribut lengkap dengan status sensor dan jejak audit
+5 8 spesifikasi layanan dengan endpoint dan jadwal
+Semua ini tetap benar apabila nantinya Anda mengganti ESP32 dengan STM32, MQTT dengan CoAP , atau AWS dengan server sendiri. Itulah
+sebabnya langkah 1–5 dikerjakan lebih dulu.
+29
+
+--- PAGE 29 ---
+Desain & Aplikasi IoT
+IoT Level · Functional View · Operational View
+LANGKAH 6, 7 & 8   ·   Zona BAGAIMANA — arsitektur mulai mengikat
+30
+
+--- PAGE 30 ---
+Desain & Aplikasi IoT
+Langkah 6 — IoT Level Specification
+•  Berapa banyak node? Satu → Level 1 –3 · Banyak → Level 4–6
+•  Seberapa besar datanya?
+•  Seberapa berat analisisnya?
+•  Bisakah tiap node bicara langsung ke internet? Tidak → Level 5 · Ya → Level 6
+Menurut Anda, Level berapa yang cocok ?
+31
+
+--- PAGE 31 ---
+Desain & Aplikasi IoT
+Jawaban Naif: Level 3
+Alur berpikir yang tampak masuk akal
+•  Datanya cukup besar — level tiap 15 menit selama setahun
+•  Analisis kebocoran butuh riwayat panjang, jadi harus di cloud
+•  Aplikasinya berbasis cloud agar bisa dibuka dari ponsel
+•  → Level 3
+Dua hal yang terlewat
+•  Node-nya ADA DUA, bukan satu → Level 3 hanya untuk node 
+tunggal → minimal Level 4
+•  Keputusan pompa akan berjalan DI CLOUD → internet mati, 
+pompa berhenti bekerja
+32
+
+--- PAGE 32 ---
+Desain & Aplikasi IoT
+Jawaban yang Benar: Level 6 dengan Gelung Kendali Lokal
+Lapis Apa yang berjalan di sana Bergantung internet?
+Node-Pompa (lokal) Interlock dry run · aturan nyala/mati 30%/90% TIDAK
+Gateway (lokal) Broker · penyangga data · aturan cadangan TIDAK
+Cloud Riwayat · deteksi kebocoran · dashboard · ubah ambang · notifikasi YA
+Semakin besar akibat kegagalan, semakin dekat keputusan itu harus tinggal dengan perangkatnya.
+33
+
+--- PAGE 33 ---
+Desain & Aplikasi IoT
+Pelajaran yang Kita Dapatkan
+Jenis 
+keputusan Tempatnya Contoh dari kasus kita
+Keselamatan 
+/ proteksi Di perangkat, LOKAL Interlock dry run
+Kendali rutin Lokal, dengan konfigurasi dari cloud Ambang 30% / 90%
+Analitik dan 
+wawasan Cloud Deteksi kebocoran, tren pemakaian
+Antarmuka 
+manusia Cloud Dashboard, notifikasi, pengambilalihan
+Keputusan yang akibat kegagalannya bersifat fisik tidak boleh bergantung pada jaringan.
+34
+
+--- PAGE 34 ---
+Desain & Aplikasi IoT
+Langkah 7 — Functional View
+Kelompok Isi untuk kasus tangki air
+Device Node-Atap (sensor level, catu surya) · Node-Pompa (sensor level, sensor arus, relay)
+Communication Tautan node→gateway · MQTT telemetri · REST konfigurasi & riwayat · bridge ke cloud
+Services Delapan layanan dari langkah 5
+Management Provisioning · OTA · ubah ambang jarak jauh · pemantauan kesehatan node · sinkronisasi waktu
+Security Identitas per perangkat · komunikasi terenkripsi · peran petugas vs pengamat · log audit
+Application Dashboard web responsif · notifikasi ke ponsel · laporan pemakaian bulanan
+35
+
+--- PAGE 35 ---
+Desain & Aplikasi IoT
+Langkah 8 — Operational View
+Nama dan merk baru muncul
+Aspek Pilihan Alasannya
+Sensor level JSN-SR04T (ultrasonik tahan air) Jangkauan 25–450 cm cocok tangki 150 cm; tahan lembap; tidak menyentuh air
+Pengendali node ESP32-WROOM Sudah dikuasai dari Embedded System; Wi -Fi bawaan; deep sleep µA
+Sensor arus pompa SCT-013 (klem, non-invasif) Tidak perlu memutus kabel daya pompa — aman dipasang
+Aktuator Relay → kontaktor pompa Relay kecil tidak boleh langsung memutus beban 750 W
+Catu Node-Atap Panel surya 2 Wp + 18650 3.400 mAh + TP4056 Tidak ada listrik di atap (perhitungan slide 40 –41)
+Konektivitas Wi-Fi 2,4 GHz; cadangan LoRa 923 MHz Uji RSSI dulu; bila atap tak terjangkau AP, beralih ke LoRa
+Protokol telemetri MQTT QoS 1 Pelepasan kopling; hemat; pengiriman terjamin
+Broker Mosquitto di gateway, bridge ke cloud Tetap bekerja saat internet mati
+Basis data InfluxDB — retensi 13 bulan, downsample > 30 hari Data deret waktu
+Keamanan mTLS per perangkat; token pengguna; peran Memenuhi kebutuhan langkah 1
+36
+
+--- PAGE 36 ---
+Desain & Aplikasi IoT
+Tiga Anggaran yang Wajib Ada
+Anggaran Pertanyaannya Bila salah
+Energi Berapa lama node bertahan? Node mati di lapangan; harus dipanjat berkala
+Latensi Berapa lama dari kejadian ke tindakan? Proteksi terlambat; perangkat rusak
+Biaya Berapa per node, dan berapa nilainya? Proyek tidak disetujui, atau tidak layak diteruskan
+Ketiganya harus dihitung DI LANGKAH 8 — bukan ditemukan setelah perangkat terpasang.
+37
+
+--- PAGE 37 ---
+Desain & Aplikasi IoT
+Anggaran Energi — Angka yang Mengejutkan
+Node-Atap: bangun 8 dtk @120 mA · deep sleep 20 µA · baterai 18650 3.400 mAh · kebutuhan ≥ 12 bulan
+Interval 
+sampling Arus rata-rata Umur baterai
+60 detik 16,0 mA 8,8 hari GAGAL
+5 menit 3,22 mA 44 hari GAGAL
+15 menit 1,09 mA 130 hari GAGAL
+30 menit 0,55 mA 256 hari GAGAL
+60 menit 0,29 mA 494 hari memenuhi energi —tapi terlalu lambat
+ADAPTIF 10 dtk 
+saat pompa ON 
++ 15 mnt idle
+9,0 mA 15,7 hari GAGAL
+Kebutuhan energi ≥ 12 bulan hanya tercapai pada interval 60 menit — dan 60 menit TERLALU LAMBAT untuk kebutuhan fungsional kita.
+Begitu jadwal adaptif yang memang dibutuhkan diterapkan, umurnya jatuh ke 15,7 hari: sampling cepat selama 2 jam memakan 8 × energi 
+dibanding seluruh 22 jam sisanya.
+38
+
+--- PAGE 38 ---
+Desain & Aplikasi IoT
+Menutup Anggaran Energi dengan Surya
+Keputusan: panel 2 Wp
+Kebutuhan harian Node -Atap
+•  Mode adaptif: 9,0 mA rata-rata
+•  9,0 mA × 24 jam = 216 mAh/hari
+•  ≈ 0,80 Wh/hari pada 3,7 V
+•  Otonomi tanpa matahari: 12,6 Wh ÷ 0,80 = 15,7 hari — melampaui 
+kebutuhan ≥ 7 hari
+Panen surya di Surabaya (≈3,5 jam setara penuh, efisiensi 70%)
+•  Panel 1 Wp → 2,4 Wh/hari → margin 3,1×
+•  Panel 2 Wp → 4,9 Wh/hari → margin 6,1×
+•  Panel 5 Wp → 12,2 Wh/hari → margin 15× (berlebihan)
+Margin 6× menutup debu, kotoran burung, musim hujan, dan penuaan panel.
+39
+
+--- PAGE 39 ---
+Desain & Aplikasi IoT
+Anggaran Latensi dan Biaya
+Baris terakhir bukan kasus langka — ia alasan keberadaan baris pertama
+Latensi — mengapa interlock harus lokal
+•  Sensor → MCU → relay (lokal): < 50 ms — MEMENUHI
+•  Sensor → gateway → relay: ~200–500 ms — memenuhi
+•  Sensor → cloud → relay: 300 ms–2 dtk — hanya bila jaringan 
+sehat
+•  Sensor → cloud → relay, internet mati: TAK HINGGA — GAGAL
+Biaya (estimasi — perbarui sesuai harga terkini)
+•  Node-Atap: ± Rp 420.000
+•  Node-Pompa: ± Rp 480.000
+•  Gateway (RasPi 4 + catu): ± Rp 1.600.000
+•  T otal satu gedung: ± Rp 2.500.000
+•  Dibandingkan: satu pompa terbakar ≈ Rp 3–5 juta — tahun ini 
+sudah dua kali
+40
+
+--- PAGE 40 ---
+Desain & Aplikasi IoT
+Langkah 9 & 10 — Integrasi dan Aplikasi
+Langkah 9 — Device & Component Integration
+•  Merakit yang sudah diputuskan: sensor ke MCU, MCU ke catu 
+daya, relay ke kontaktor, node ke gateway
+•  Keluaran: skema rangkaian · daftar komponen (BOM) · rancangan 
+casing · prosedur pemasangan
+Langkah 10 — Application Development
+•  Membangun yang dilihat pengguna: dashboard, notifikasi, kendali 
+manual, laporan
+•  Keluaran: aplikasi yang berjalan · panduan singkat pengguna
+Di sinilah ±70% waktu proyek habis — tapi waktunya bisa diperkirakan. Waktu yang habis karena melewatkan langkah 1 tidak bisa.
+41
+
+--- PAGE 41 ---
+Desain & Aplikasi IoT
+Sepuluh Langkah Desain
+# Langkah Hasil untuk kasus tangki air
+1 Purpose & Requirements 1 paragraf tujuan · 4 kategori kebutuhan · 6 nonfungsional terukur
+2 Process Specification 4 use case · flowchart lengkap dengan jalur gagal
+3 Domain Model 5 entitas fisik · 4 virtual · 2 device · 8 layanan
+4 Information Model Kartu atribut Tangki dan Pompa
+5 Service Specification 8 layanan dengan endpoint & jadwal
+6 IoT Level Level 6 dengan gelung kendali lokal
+7 Functional View 6 kelompok fungsi terisi
+8 Operational View 14 pilihan teknologi, semuanya beralasan
+9 Integration Skema, BOM, casing, prosedur
+10 Application Dashboard, notifikasi, laporan
+Tiga angka yang mengikat seluruhnya: energi 0,80 Wh/hari · latensi interlock < 50 ms · biaya ± Rp 2,5 juta per gedung
+42
+
+--- PAGE 42 ---
+Desain & Aplikasi IoT
+Metodologi Itu Melingkar, Bukan Menurun
+Di langkah Kita menemukan Kembali memperbaiki
+6 Level 3 tidak memenuhi kebutuhan ketahanan luring Menegaskan kembali kebutuhan di langkah 1
+8 Baterai saja tidak cukup untuk 12 bulan Mengubah keputusan catu daya dan jadwal layanan di langkah 5
+5 (latihan 2) Tidak ada layanan pembaruan firmware Menambah kebutuhan di langkah 1 dan fungsi di langkah 7
+Iterasi bukan tanda Anda salah merancang. Iterasi adalah rancangan yang sedang bekerja. Yang salah adalah menemukan ketiganya
+SETELAH perangkat terpasang di atap.
+43
+
+--- PAGE 43 ---
+Desain & Aplikasi IoT
+Kesalahan Paling Mahal
+Melewati langkah Akibatnya muncul sebagai
+1 "Sistemnya jalan, tapi tidak ada yang memakainya"
+2 "Tidak ada yang tahu apa yang harus terjadi kalau sensornya mati"
+3–4 "Datanya ada, tapi tidak bisa dihubungkan dengan apa pun"
+5 "Setiap orang menamai topik MQTT sesukanya"
+6 "Internet mati, seluruh sistem berhenti"
+7 "Lupa memikirkan pembaruan firmware dan hak akses"
+8 "Komponen sudah dibeli, ternyata tidak memenuhi kebutuhan"
+Melewati langkah 1 paling mahal karena sembilan langkah berikutnya tetap bisa dikerjakan dengan sempurna — untuk masalah yang sa lah.
+44
+
+--- PAGE 44 ---
+Desain & Aplikasi IoT
+Metodologi Ini Berskala
+Ukuran proyek Bentuk yang wajar
+Tugas kuliah kecil Satu halaman, satu paragraf per langkah
+Proyek akhir mata kuliah ini 6–10 halaman, dengan diagram di langkah 2, 3, dan 8
+Purwarupa industri 20–40 halaman, ditinjau bersama pemangku kepentingan
+Sistem terpasang berskala kota Dokumen terpisah per langkah, dengan kendali versi
+Yang wajib tetap sama pada semua ukuran: kesepuluh pertanyaannya DIJAWAB. Yang berubah hanya panjang jawabannya.
+45
+
+--- PAGE 45 ---
+Desain & Aplikasi IoT
+TUGAS 1
+Dekonstruksi Arsitektur Produk IoT
+Rilis hari ini · kumpul minggu ke-4
+46
+
+--- PAGE 46 ---
+Desain & Aplikasi IoT
+Tugas 1 — Apa yang Dikerjakan
+•  Pilih SATU produk IoT komersial — tiap mahasiswa produk berbeda
+•  Rekonstruksi arsitekturnya dan petakan ke model 5 lapis, dengan diagram blok buatan sendiri
+•  Identifikasi & justifikasi dugaan teknologi tiap lapis — dengan BUKTI: datasheet, sertifikasi Postel/FCC, teardown 
+daring, dokumentasi resmi
+•  Susun ulang langkah 1, 3, dan 6 metodologi: purpose & requirements (min. 3 nonfungsional terukur) · domain model · 
+tingkat IoT Level 1–6 beserta alasannya
+•  Anggaran energi node dan perkiraan umur baterai — TUNJUKKAN PERHITUNGANNYA, seperti slide 40
+•  Satu halaman analisis kritis: apa kelemahan rancangan itu, dan apa yang akan Anda ubah?
+47
+
+--- PAGE 47 ---
+Desain & Aplikasi IoT
+Tugas 1 — Keluaran, Rubrik, dan Tenggat
+Keluaran & tenggat
+•  Laporan 6–8 halaman (PDF)
+•  Satu poster A3 digital berisi diagram arsitektur
+•  T enggat: akhir minggu ke-4
+•  Keterlambatan −10% per hari, maksimal 3 hari
+•  PENDAFTARAN PRODUK dibuka hari ini — satu produk satu 
+mahasiswa, tutup akhir minggu ini
+Rubrik penilaian
+•  Ketepatan pemetaan arsitektur ke 5 lapis — 25%
+•  Kualitas dan kredibilitas bukti teknologi — 25%
+•  Kelengkapan spesifikasi & domain model, termasuk IoT Level —
+20%
+•  Kebenaran perhitungan energi — 15%
+•  Kedalaman analisis kritis — 15%
+AI generatif boleh dipakai, WAJIB dideklarasikan pada lampiran (alat apa, untuk bagian mana). Anda tetap bertanggung jawab pe nuh atas 
+seluruh isi.
+48
+
+--- PAGE 48 ---
+Desain & Aplikasi IoT
+Latihan 3 (Kerjakan Sekarang)
+•  Sebutkan produk IoT yang ingin Anda bedah untuk Tugas 1
+•  Tulis purpose statement-nya dalam SATU kalimat: bahasa pengguna, tanpa nama komponen, tanpa angka teknis
+•  Bacakan ke pasangan Anda. Pasangan menilai dengan satu pertanyaan: "Apakah kepala bagian sarana bisa memahami 
+kalimat ini?"
+•  Tebak tingkat sistemnya (Level 1–6) dan sebutkan alasannya dalam satu kalimat
+49
+
+--- PAGE 49 ---
+Desain & Aplikasi IoT
+Rangkuman
+•  Metodologi adalah urutan PERTANYAAN, bukan urutan pekerjaan
+•  Nama merek pertama baru muncul di langkah 8 — tujuh langkah sebelumnya bebas teknologi
+•  Kebutuhan nonfungsional harus punya ANGKA dan CARA UJI, atau ia hanya harapan
+•  Keputusan yang akibat kegagalannya fisik tidak boleh bergantung pada jaringan
+•  Energi, latensi, dan biaya wajib dihitung di langkah 8 — bukan ditemukan di lapangan
+•  Iterasi adalah rancangan yang sedang bekerja, bukan tanda kegagalan
+Angka yang layak diingat: sampling 60 detik lewat Wi -Fi → baterai 18650 habis dalam 8,8 hari.
+50
+
+--- PAGE 50 ---
+Desain & Aplikasi IoT
+Bacaan dan Minggu Depan
+•  BACAAN: Bahga & Madisetti Bab 5 — metodologi lengkap dengan studi kasus home automation (bandingkan dengan kasus 
+tangki air kita: strukturnya sama, kasusnya berbeda)
+•  BACAAN: Perry Lea Bab 3 — sensor dan sistem daya
+•  BACAAN: NPTEL Introduction to IoT — Minggu 2
+•  PERTEMUAN 3: kita turun ke blok 1 dan 2 — sensor, kalibrasi, sampling, dan anggaran energi secara serius
+•  PRAKTIKUM: ukur konsumsi arus ESP32 mode aktif dan deep sleep, lalu hitung umur baterainya sendiri
+•  BAWA: ESP32 dan modul pengukur daya INA219 dari lab
+•  PENGINGAT : pendaftaran produk Tugas 1 tutup akhir minggu ini
+51
+Metodologi 
+Desain
+ 1. Penginderaan
+ 2. Node
+ 3. Konektivitas
+ 4. Gateway / 
+Edge
+ 5. Platform
+ 6. Aplikasi
+umpan balik → aktuator
+

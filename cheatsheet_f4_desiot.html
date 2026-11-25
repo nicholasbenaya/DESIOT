@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Cheatsheet & Latihan Soal Desain dan Aplikasi IoT (DESIOT)</title>
+<style>
+  @page {
+    size: 215mm 330mm; /* Standar Folio / F4 */
+    margin: 4mm 5mm;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 6.6pt;
+    line-height: 1.18;
+    color: #0f172a;
+    background: #ffffff;
+  }
+
+  .page-container {
+    width: 205mm;
+    height: 322mm;
+    max-height: 322mm;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 2px;
+    margin-bottom: 2.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header h1 {
+    font-size: 9.6pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #0f172a;
+  }
+  .header .meta {
+    font-size: 6.2pt;
+    color: #475569;
+    font-weight: 600;
+  }
+
+  /* Grids */
+  .grid-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.05fr;
+    gap: 3mm;
+  }
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3.2mm;
+  }
+
+  /* Section Titles */
+  .section-title {
+    font-size: 6.8pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 1.6px 3.5px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+    letter-spacing: 0.2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title.alt { background: #1e3a8a; }
+  .section-title.accent { background: #047857; }
+  .section-title.amber { background: #b45309; }
+
+  /* Cards */
+  .card {
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2.5px 3.2px;
+    margin-bottom: 2px;
+    background: #ffffff;
+  }
+  .card-header {
+    font-weight: 700;
+    font-size: 6.7pt;
+    color: #1e293b;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1px;
+    margin-bottom: 1.6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-header .badge {
+    font-size: 5.2pt;
+    padding: 0.5px 2.5px;
+    border-radius: 2px;
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    border: 1px solid #cbd5e1;
+  }
+
+  p, ul { margin-bottom: 1px; }
+  ul { padding-left: 8.5px; }
+  li { margin-bottom: 0.6px; }
+  strong { color: #0f172a; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 5.8pt;
+    margin-top: 1px;
+    margin-bottom: 1.2px;
+  }
+  th, td {
+    border: 1px solid #cbd5e1;
+    padding: 0.8px 2px;
+    text-align: left;
+    line-height: 1.15;
+  }
+  th {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  /* Question Boxes (Page 2) */
+  .q-item {
+    border: 1px solid #e2e8f0;
+    border-left: 2.8px solid #0f172a;
+    border-radius: 2px;
+    padding: 2px 3.2px;
+    margin-bottom: 2px;
+    background: #fafafa;
+  }
+  .q-item.trivia { border-left-color: #6366f1; }
+  .q-item.nontech { border-left-color: #0d9488; }
+  .q-item.tech { border-left-color: #e11d48; }
+
+  .q-header {
+    font-weight: 700;
+    font-size: 6.6pt;
+    margin-bottom: 1px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .q-type {
+    font-size: 5.2pt;
+    text-transform: uppercase;
+    font-weight: 800;
+    padding: 0.5px 2.5px;
+    border-radius: 2px;
+    color: #fff;
+  }
+  .type-triv { background: #6366f1; }
+  .type-non { background: #0d9488; }
+  .type-tech { background: #e11d48; }
+
+  .q-text {
+    font-size: 6.3pt;
+    margin-bottom: 1px;
+    line-height: 1.16;
+    color: #1e293b;
+  }
+  .q-opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8px 2.5px;
+    font-size: 5.8pt;
+    color: #334155;
+    margin-bottom: 1px;
+    background: #fff;
+    padding: 1px 2.5px;
+    border-radius: 2px;
+    border: 1px solid #f1f5f9;
+  }
+  .q-ans {
+    font-size: 6pt;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 1px 2.5px;
+    border-radius: 2px;
+    line-height: 1.15;
+    color: #14532d;
+  }
+  .q-ans strong { color: #15803d; }
+
+  .formula-box {
+    background: #f8fafc;
+    border: 1px dashed #64748b;
+    border-radius: 2px;
+    padding: 1.2px 3px;
+    font-family: monospace;
+    font-size: 6pt;
+    margin: 1px 0;
+    color: #0f172a;
+  }
+</style>
+</head>
+<body>
+
+<!-- HALAMAN 1: MASTER CHEATSHEET LENGKAP -->
+<div class="page-container">
+  <div class="header">
+    <div>
+      <h1>Desain & Aplikasi IoT (DESIOT) - Master Cheatsheet F4</h1>
+    </div>
+    <div class="meta">
+      Standar Folio F4 (215 x 330 mm) | S1 Teknik Komputer ITS | Halaman 1: Ringkasan Materi Inti
+    </div>
+  </div>
+
+  <div class="grid-3col">
+    <!-- KOLOM 1: FONDASI, ARSITEKTUR & KOMUNIKASI -->
+    <div class="col">
+      <div class="section-title">Modul 1: Fondasi & Arsitektur IoT</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Esensi IoT vs Embedded Systems</span>
+          <span class="badge">Filosofi</span>
+        </div>
+        <p><strong>Bukan Benda + Internet</strong>: IoT adalah siklus tertutup (closed loop) berskala besar: penginderaan, pengiriman, analisis komputasi, dan aktuasi otomatis tanpa campur tangan manusia setiap waktu.</p>
+        <p><strong>Embedded vs IoT</strong>: Embedded System merancang 1 node tunggal; IoT merancang orkestrasi banyak node terdistribusi dalam jaringan.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>4 Sumbu Kompromi Mutlak (Trade-off)</span>
+          <span class="badge">Fisika</span>
+        </div>
+        <ul>
+          <li><strong>1. Jangkauan (Range)</strong>: Jarak rambat sinyal (m hingga km).</li>
+          <li><strong>2. Laju Data (Throughput)</strong>: Bit per detik yang dikirim.</li>
+          <li><strong>3. Konsumsi Energi</strong>: Arus listrik & umur baterai.</li>
+          <li><strong>4. Biaya (Cost)</strong>: Harga modul + biaya jaringan berjalan.</li>
+        </ul>
+        <p><em>Hukum Alam</em>: Jarak sangat jauh + baterai awet bertahun-tahun = laju data wajib dikorbankan (hanya byte/menit, bukan video streaming).</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Arsitektur Model 5 Lapis</span>
+          <span class="badge">Model Industri</span>
+        </div>
+        <table>
+          <tr><th>Lapis</th><th>Peran & Komponen Utama</th></tr>
+          <tr><td><strong>5. Business</strong></td><td>Manajemen armada (fleet), FOTA, privasi (UU PDP), monetisasi.</td></tr>
+          <tr><td><strong>4. Application</strong></td><td>Dashboard web, aplikasi mobile, UI pemantauan real-time.</td></tr>
+          <tr><td><strong>3. Processing</strong></td><td>Cloud/server, time-series DB, rule engine, dekripsi data.</td></tr>
+          <tr><td><strong>2. Network</strong></td><td>Wi-Fi, BLE, Zigbee, LoRa, 4G, gateway penerjemah protokol.</td></tr>
+          <tr><td><strong>1. Perception</strong></td><td>Sensor (suhu, ultrasonik), aktuator (relay, motor, pompa).</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>4 Model Komunikasi Data IoT</span>
+          <span class="badge">Protokol</span>
+        </div>
+        <ul>
+          <li><strong>Request-Response (REST/HTTP)</strong>: Klien panggil, server jawab. Stateless, overhead header besar (~ratusan byte).</li>
+          <li><strong>Publish-Subscribe (MQTT)</strong>: Sensor terbit (pub) ke Broker pada topik tertentu, klien langganan (sub) menerima instan. Overhead sangat kecil (2 byte).</li>
+          <li><strong>Push-Pull (Message Queue)</strong>: Produsen dorong data ke antrean buffer (Kafka/RabbitMQ), konsumen tarik bergantian (load balancing).</li>
+          <li><strong>Exclusive Pair (WebSocket)</strong>: Sambungan dua arah (full duplex) tetap terbuka, latensi sangat rendah untuk live monitor.</li>
+        </ul>
+      </div>
+
+      <div class="section-title">Modul 2: Metodologi Bahga & Madisetti</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>10 Langkah Desain Sistem IoT</span>
+          <span class="badge">Metodologi</span>
+        </div>
+        <ul>
+          <li><strong>1. Purpose & Requirements</strong>: Tujuan & syarat nonfungsional.</li>
+          <li><strong>2. Process Specification</strong>: Diagram alir proses kerja.</li>
+          <li><strong>3. Domain Model</strong>: Memetakan entitas fisik & virtual.</li>
+          <li><strong>4. Information Model</strong>: Struktur atribut data statis & dinamis.</li>
+          <li><strong>5. Service Specification</strong>: Definisi endpoint layanan data.</li>
+          <li><strong>6. IoT Level Specification</strong>: Menentukan tingkat 1 s.d. 6.</li>
+          <li><strong>7. Functional View</strong>: Pengelompokan blok fungsional.</li>
+          <li><strong>8. Operational View</strong>: Pemilihan merek chip, modul, & protokol.</li>
+          <li><strong>9. Device Integration</strong>: Perakitan fisik perangkat keras.</li>
+          <li><strong>10. Application Dev</strong>: Pembuatan software antarmuka pengguna.</li>
+        </ul>
+        <p><em>Prinsip</em>: Merek & teknologi baru boleh muncul pada Langkah 8!</p>
+      </div>
+    </div>
+
+    <!-- KOLOM 2: IOT LEVEL, NODE & MANAJEMEN ENERGI -->
+    <div class="col">
+      <div class="section-title alt">Klasifikasi IoT Level & Domain Model</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Klasifikasi IoT Level (Bahga & Madisetti)</span>
+          <span class="badge">Arsitektur</span>
+        </div>
+        <table>
+          <tr><th>Level</th><th>Node</th><th>Simpan Data</th><th>Analisis</th><th>Aplikasi</th></tr>
+          <tr><td><strong>Level 1</strong></td><td>1 (Tunggal)</td><td>Lokal</td><td>Lokal</td><td>Lokal</td></tr>
+          <tr><td><strong>Level 2</strong></td><td>1 (Tunggal)</td><td>Cloud</td><td>Lokal</td><td>Cloud</td></tr>
+          <tr><td><strong>Level 3</strong></td><td>1 (Tunggal)</td><td>Cloud</td><td>Cloud</td><td>Cloud</td></tr>
+          <tr><td><strong>Level 4</strong></td><td>Banyak</td><td>Cloud</td><td>Cloud</td><td>Cloud + Obs</td></tr>
+          <tr><td><strong>Level 5</strong></td><td>Banyak</td><td>Cloud</td><td>Cloud</td><td>Cloud + Koord</td></tr>
+          <tr><td><strong>Level 6</strong></td><td>Banyak</td><td>Lokal+Cloud</td><td>Edge+Cloud</td><td>Lokal+Cloud</td></tr>
+        </table>
+        <p><strong>Peringatan Kendali Kritis</strong>: Jangan gunakan Level 3 murni untuk aktuator penting (pompa/katup). Jika internet putus, sistem mandek. Gunakan <strong>Level 6 dengan Local Control Loop</strong> agar otomasi lokal tetap jalan tanpa internet.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Domain Model: Fisik vs Virtual vs Device</span>
+          <span class="badge">Konsep</span>
+        </div>
+        <ul>
+          <li><strong>Physical Entity</strong>: Benda nyata yang dipedulikan (Air di Tangki).</li>
+          <li><strong>Virtual Entity</strong>: Data kembaran digital di basis data (Tangki#01).</li>
+          <li><strong>Device</strong>: Alat pengindera/aktuasi fisik (Sensor Ultrasonik).</li>
+          <li><strong>Resource</strong>: Software internal pembaca sinyal di mikrokontroler.</li>
+          <li><strong>Service</strong>: Antarmuka komunikasi (endpoint REST / topik MQTT).</li>
+        </ul>
+      </div>
+
+      <div class="section-title alt">Modul 3: Node IoT, Energi & Sensor</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Profil Arus & Rumus Anggaran Energi</span>
+          <span class="badge">Kalkulasi</span>
+        </div>
+        <p><strong>Siklus Kerja (Duty Cycle)</strong>: Sensor tidur lelap (Deep Sleep) hampir sepanjang waktu, hanya bangun sekejap untuk ukur & kirim radio.</p>
+        <div class="formula-box">
+          Q_siklus = (I_tidur x t_tidur) + (I_aktif x t_aktif)<br>
+          I_avg = Q_siklus / t_total_siklus<br>
+          Umur Baterai (jam) = Kapasitas_baterai (mAh) / I_avg (mA)
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Jebakan Papan DevKit vs Produksi</span>
+          <span class="badge">Hardware</span>
+        </div>
+        <ul>
+          <li><strong>Datasheet SoC</strong>: ESP32 deep sleep hanya ~10-15 &mu;A.</li>
+          <li><strong>Uji Papan DevKit</strong>: Menyedot 3 hingga 10 mA (ratusan kali lipat!).</li>
+          <li><strong>Biang Kerok</strong>: LDO murah (AMS1117 quiescent 5 mA), chip USB-UART (CP2102/CH340 terus hidup), dan LED power merah.</li>
+          <li><strong>Solusi Produksi</strong>: Ultra-low quiescent LDO (&lt;1 &mu;A) & matikan LED.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Karakteristik Sensor & Strategi Reduksi Data</span>
+          <span class="badge">Optimasi</span>
+        </div>
+        <p><strong>Prinsip Emas</strong>: <em>Mencuplik murah, mengirim radio sangat mahal!</em> (1x kirim radio setara energi 208x pembacaan sensor).</p>
+        <ul>
+          <li><strong>Deadband Reporting</strong>: Kirim data HANYA jika delta nilai &gt; ambang.</li>
+          <li><strong>Local Edge Aggregation</strong>: Cuplik tiap detik di RAM, kirim rata-rata tiap 10 menit.</li>
+          <li><strong>Adaptive Sampling</strong>: Laju cuplik naik saat kondisi anomali/cepat berubah.</li>
+          <li><strong>Kalibrasi</strong>: 1-titik (offset), 2-titik (gain/span), multi-titik (non-linear).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- KOLOM 3: KONEKTIVITAS JARAK PENDEK & JARAK JAUH -->
+    <div class="col">
+      <div class="section-title accent">Modul 4 & 5: Konektivitas Nirkabel</div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Teorema Shannon & Link Budget</span>
+          <span class="badge">Fisika Radio</span>
+        </div>
+        <div class="formula-box">
+          C = B x log2(1 + SNR) &nbsp;|&nbsp; FSPL = 20log10(d) + 20log10(f) + K<br>
+          P_rx = P_tx + G_tx + G_rx - PathLoss - Margin &ge; Sensitivitas
+        </div>
+        <ul>
+          <li><strong>2.4 GHz vs Sub-GHz (920 MHz)</strong>: 2.4 GHz data kencang namun mudah diserap beton. Sub-GHz tembus halangan & difraksi jauh lebih baik.</li>
+          <li><strong>RSSI</strong>: Hanya indikator daya kasar, berfluktuasi karena pantulan.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Jarak Pendek: Wi-Fi vs BLE vs Zigbee</span>
+          <span class="badge">Komparasi</span>
+        </div>
+        <ul>
+          <li><strong>Wi-Fi</strong>: Data raksasa (&gt;10 Mbps), jangkauan 30-50m, sangat boros daya (~100 &mu;Ah/laporan), butuh asosiasi AP lama.</li>
+          <li><strong>BLE (Bluetooth LE)</strong>: Sangat hemat (~0.008 &mu;Ah), advertising di kanal 37, 38, 39 tanpa perlu pairing, payload kecil, jangkauan 10-30m.</li>
+          <li><strong>Zigbee Mesh</strong>: Saling estafet pesan (30m/hop). <strong>Coordinator (ZC)</strong> & <strong>Router (ZR)</strong> wajib colok listrik AC! Hanya <strong>End Device (ZED)</strong> yang boleh tidur baterai.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>LoRa: Chirp Spread Spectrum & Spreading Factor</span>
+          <span class="badge">LPWAN</span>
+        </div>
+        <p><strong>Processing Gain</strong>: LoRa membaca sinyal hingga -20 dB di bawah derau. <strong>Spreading Factor (SF7 - SF12)</strong> adalah tuas kompromi matematis:</p>
+        <table>
+          <tr><th>SF</th><th>Data Rate</th><th>Airtime (50B)</th><th>Sensitivitas</th><th>Konsumsi Baterai</th></tr>
+          <tr><td><strong>SF7</strong></td><td>~5.5 kbps</td><td>0.098 detik</td><td>-123 dBm</td><td>Paling Hemat</td></tr>
+          <tr><td><strong>SF10</strong></td><td>~0.98 kbps</td><td>0.616 detik</td><td>-130 dBm</td><td>Boros (6x SF7)</td></tr>
+          <tr><td><strong>SF12</strong></td><td>~0.25 kbps</td><td>2.302 detik</td><td>-137 dBm</td><td>Sangat Boros (23x SF7)</td></tr>
+        </table>
+        <p><em>Fakta</em>: LoRa bukan hemat energi, tapi berjangkauan jauh! SF12 memakan energi 371x lipat dibanding transmisi Zigbee.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Regulasi Indonesia & Batasan Duty Cycle</span>
+          <span class="badge">Hukum SDPPI</span>
+        </div>
+        <ul>
+          <li><strong>Frekuensi Legal Indonesia</strong>: <strong>920 - 923 MHz</strong> (LoRaWAN AS923-2). Modul 868 MHz (Eropa) & 915 MHz (USA) adalah <strong>ILEGAL</strong>.</li>
+          <li><strong>Duty Cycle 1%</strong>: Hukum membatasi modul memancar maks 1% waktu. Jika memancar 1 detik, WAJIB diam 99 detik! Pada SF12, jeda wajib adalah 228 detik (~4 menit), jadi dilarang kirim tiap 30 detik.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>Kelas LoRaWAN & Jaringan Seluler IoT</span>
+          <span class="badge">Jaringan</span>
+        </div>
+        <ul>
+          <li><strong>Kelas A</strong>: Paling hemat, hanya buka RX1/RX2 setelah kirim uplink.</li>
+          <li><strong>Kelas B</strong>: Sinkronisasi beacon terjadwal dari gateway.</li>
+          <li><strong>Kelas C</strong>: Selalu mendengarkan terus, wajib colok listrik PLN.</li>
+          <li><strong>NB-IoT & LTE-M</strong>: Pakai menara BTS operator, jangkauan nasional, ada biaya langganan bulanan per node. NB-IoT hemat daya (fitur PSM & eDRX).</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span>6 Pertanyaan Penentu Pilihan Konektivitas</span>
+          <span class="badge">Pohon Keputusan</span>
+        </div>
+        <p>1. Jarak &gt; 100m? &rarr; Wi-Fi/BLE/Zigbee gugur.<br>
+        2. Ada colokan listrik perantara? &rarr; Tidak ada = Mesh gugur.<br>
+        3. Ukuran data &gt; 1 kB / sering? &rarr; LPWAN gugur (duty cycle).<br>
+        4. Butuh dihubungi instan tiap saat? &rarr; LoRa Kelas A gugur.<br>
+        5. Banyak node & masa hidup lama? &rarr; Bangun gateway LoRa sendiri.<br>
+        6. Siapa perawat sistem? &rarr; Orang awam = sederhanakan sistem.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- HALAMAN 2: 10 CONTOH SOAL, KUNCI & PEMBAHASAN MENDALAM -->
+<div class="page-container">
+  <div class="header">
+    <div>
+      <h1>Desain & Aplikasi IoT (DESIOT) - 10 Contoh Soal & Pembahasan</h1>
+    </div>
+    <div class="meta">
+      Standar Folio F4 (215 x 330 mm) | S1 Teknik Komputer ITS | Halaman 2: Evaluasi Komprehensif
+    </div>
+  </div>
+
+  <div class="grid-2col">
+    <!-- KOLOM KIRI: SOAL TRIVIAL & SOAL NON-TEKNIKAL -->
+    <div class="col">
+      <div class="section-title">Bagian 1: Soal Trivial (Pemahaman Cepat & Regulasi)</div>
+
+      <!-- SOAL 1 -->
+      <div class="q-item trivia">
+        <div class="q-header">
+          <span>1. Tokoh Pencetus dan Asal Mula Istilah IoT</span>
+          <span class="q-type type-triv">Trivial</span>
+        </div>
+        <div class="q-text">Istilah "Internet of Things" pertama kali dicetuskan pada tahun 1999 oleh seorang peneliti saat mempresentasikan solusi rantai pasok di Procter & Gamble berbasiskan teknologi:</div>
+        <div class="q-opts">
+          <div>a. Tim Berners-Lee (HTTP/HTML)</div><div>b. Kevin Ashton (RFID)</div>
+          <div>c. Vint Cerf (TCP/IP)</div><div>d. Andy Stanford-Clark (MQTT)</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: B (Kevin Ashton - RFID)</strong>. Ashton menggagas konsep perangkat fisik terhubung untuk pelacakan pasokan barang menggunakan radio RFID pada tahun 1999.</div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="q-item trivia">
+        <div class="q-header">
+          <span>2. Alokasi Frekuensi Legal LoRaWAN di Indonesia</span>
+          <span class="q-type type-triv">Trivial</span>
+        </div>
+        <div class="q-text">Berdasarkan regulasi resmi Ditjen SDPPI Kominfo RI, pita frekuensi unlicensed ISM yang sah digunakan untuk perangkat LoRaWAN di wilayah Indonesia adalah:</div>
+        <div class="q-opts">
+          <div>a. 868 MHz (Standar EU868)</div><div>b. 915 MHz (Standar US915)</div>
+          <div>c. 920 - 923 MHz (Standar AS923-2)</div><div>d. 433 MHz (Standar Asia)</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: C (920 - 923 MHz / AS923-2)</strong>. Modul varian 868 MHz dan 915 MHz tidak memiliki izin edar/pakai di Indonesia dan melanggar hukum frekuensi seluler.</div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="q-item trivia">
+        <div class="q-header">
+          <span>3. Protokol Pesan Hemat Daya dengan Broker Terpusat</span>
+          <span class="q-type type-triv">Trivial</span>
+        </div>
+        <div class="q-text">Protokol komunikasi IoT berbasis Publish-Subscribe yang memiliki ukuran overhead header minimum hanya 2 byte dan sangat ideal untuk mikrokontroler hemat daya adalah:</div>
+        <div class="q-opts">
+          <div>a. HTTP/1.1 REST API</div><div>b. MQTT</div>
+          <div>c. CoAP over DTLS</div><div>d. WebSocket</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: B (MQTT)</strong>. Header 2 byte MQTT jauh lebih hemat energi dibanding header HTTP yang mencapai ratusan byte per transaksi pengiriman.</div>
+      </div>
+
+      <div class="section-title alt">Bagian 2: Soal Non-Teknikal & Analisis Kasus</div>
+
+      <!-- SOAL 4 -->
+      <div class="q-item nontech">
+        <div class="q-header">
+          <span>4. Analisis Bahaya Penerapan IoT Level 3 pada Sistem Kendali</span>
+          <span class="q-type type-non">Non-Teknikal</span>
+        </div>
+        <div class="q-text">Sebuah tim merancang sistem pompa tangki air gedung dengan mengirim data sensor ke cloud, mengeksekusi logika di cloud, lalu mengirim perintah nyala/mati ke pompa (IoT Level 3). Mengapa rancangan ini sangat berbahaya?</div>
+        <div class="q-opts">
+          <div>a. Biaya server cloud terlalu mahal</div><div>b. Internet putus = kontrol pompa mati total</div>
+          <div>c. Database cloud tidak mampu menampung data</div><div>d. Sensor ultrasonik tidak kompatibel cloud</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: B</strong>. Jika koneksi internet kampus terputus atau latensi tinggi, perintah mati tidak sampai ke pompa sehingga air meluap atau pompa terbakar (dry-run). <em>Solusi yang benar adalah IoT Level 6 dengan local control loop mandiri</em>.</div>
+      </div>
+
+      <!-- SOAL 5 -->
+      <div class="q-item nontech">
+        <div class="q-header">
+          <span>5. Metodologi Bahga: Domain Model vs Information Model</span>
+          <span class="q-type type-non">Non-Teknikal</span>
+        </div>
+        <div class="q-text">Dalam metodologi desain 10 langkah Bahga & Madisetti, pernyataan manakah yang paling tepat membedakan Domain Model (Langkah 3) dengan Information Model (Langkah 4)?</div>
+        <div class="q-opts">
+          <div>a. Domain memilih merk chip, Information memilih kabel</div><div>b. Domain berisi software, Information berisi hardware</div>
+          <div>c. Domain mendata entitas; Information mendata atributnya</div><div>d. Domain membuat dashboard, Information membuat database</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: C</strong>. Domain Model memetakan apa saja benda/pelaku yang ada di dunia masalah, sedangkan Information Model mendefinisikan atribut data spesifik (tipe data, satuan, relasi).</div>
+      </div>
+
+      <!-- SOAL 6 -->
+      <div class="q-item nontech">
+        <div class="q-header">
+          <span>6. Studi Kasus Pemilihan Teknologi Sensor Kebun Kampus</span>
+          <span class="q-type type-non">Non-Teknikal</span>
+        </div>
+        <div class="q-text">Sensor kelembapan tanah dipasang di kebun terbuka 5 hektar (jarak 350m ke gedung terdekat, tanpa listrik PLN). Laporan dikirim 1x per jam (20 byte). Mengapa Zigbee gugur dan LoRaWAN menang?</div>
+        <div class="q-opts">
+          <div>a. Zigbee tidak mendukung data kelembapan</div><div>b. Router Zigbee wajib colok listrik PLN terus-menerus</div>
+          <div>c. LoRaWAN memiliki bandwidth video streaming</div><div>d. Modul Zigbee dilarang oleh Kominfo RI</div>
+        </div>
+        <div class="q-ans"><strong>Kunci: B</strong>. Jaringan mesh Zigbee butuh node router perantara yang harus selalu menyala dan dicolok listrik AC. Di kebun tanpa listrik, router tidak bisa beroperasi, sehingga LoRaWAN jarak jauh menjadi solusi mutlak.</div>
+      </div>
+    </div>
+
+    <!-- KOLOM KANAN: SOAL TEKNIKAL & PERHITUNGAN MATEMATIS -->
+    <div class="col">
+      <div class="section-title amber">Bagian 3: Soal Teknikal & Perhitungan Matematis</div>
+
+      <!-- SOAL 7 -->
+      <div class="q-item tech">
+        <div class="q-header">
+          <span>7. Perhitungan Anggaran Energi & Estimasi Umur Baterai</span>
+          <span class="q-type type-tech">Perhitungan</span>
+        </div>
+        <div class="q-text">Node sensor beroperasi tiap siklus 600 detik (10 menit). Fasa aktif = 5 detik dengan arus 120 mA; fasa deep sleep = 595 detik dengan arus 20 &mu;A (0,02 mA). Ditenagai baterai 3.000 mAh. Berapa estimasi umur baterai dalam bulan (1 bulan = 30 hari)?</div>
+        <div class="q-opts">
+          <div>a. ~1,5 bulan</div><div>b. ~4,1 bulan</div>
+          <div>c. ~8,5 bulan</div><div>d. ~12,2 bulan</div>
+        </div>
+        <div class="q-ans">
+          <strong>Kunci: B (~4,1 bulan)</strong>.<br>
+          1. Q_siklus = (120 mA x 5 s) + (0,02 mA x 595 s) = 600 + 11,9 = <strong>611,9 mA&middot;s</strong>.<br>
+          2. I_avg = 611,9 / 600 s = <strong>1,0198 mA</strong>.<br>
+          3. Total Jam = 3.000 mAh / 1,0198 mA &approx; <strong>2.941,66 jam</strong>.<br>
+          4. Umur Bulan = 2.941,66 / (24 x 30) = 2.941,66 / 720 &approx; <strong>4,08 bulan</strong>.
+        </div>
+      </div>
+
+      <!-- SOAL 8 -->
+      <div class="q-item tech">
+        <div class="q-header">
+          <span>8. Perhitungan Link Budget & Redaman Maksimal (FSPL)</span>
+          <span class="q-type type-tech">Perhitungan</span>
+        </div>
+        <div class="q-text">Sistem radio memiliki daya pancar P_tx = +14 dBm, antena pemancar G_tx = +2 dBi, antena penerima G_rx = +2 dBi, margin keselamatan = 10 dB, dan batas sensitivitas penerima = -130 dBm. Berapakah nilai Free Space Path Loss (FSPL) maksimum yang ditoleransi?</div>
+        <div class="q-opts">
+          <div>a. 110 dB</div><div>b. 128 dB</div>
+          <div>c. 138 dB</div><div>d. 148 dB</div>
+        </div>
+        <div class="q-ans">
+          <strong>Kunci: C (138 dB)</strong>.<br>
+          P_rx = P_tx + G_tx + G_rx - FSPL - Margin &ge; Sensitivitas<br>
+          +14 + 2 + 2 - FSPL - 10 &ge; -130 &rArr; +8 - FSPL &ge; -130<br>
+          FSPL &le; 8 - (-130) = <strong>138 dB</strong>.
+        </div>
+      </div>
+
+      <!-- SOAL 9 -->
+      <div class="q-item tech">
+        <div class="q-header">
+          <span>9. Perhitungan Airtime LoRa SF12 & Batas Duty Cycle 1%</span>
+          <span class="q-type type-tech">Perhitungan</span>
+        </div>
+        <div class="q-text">Paket LoRa SF12 membutuhkan airtime t_air = 2,302 detik. Berdasarkan batas hukum Duty Cycle 1% Ditjen SDPPI Kominfo, berapakah jeda diam minimum (t_off) dan batas maksimum paket yang boleh dikirim dalam 1 jam (3.600 detik)?</div>
+        <div class="q-opts">
+          <div>a. Jeda 99 detik; Maks 36 paket</div><div>b. Jeda 228 detik; Maks 15 paket</div>
+          <div>c. Jeda 23 detik; Maks 150 paket</div><div>d. Jeda 600 detik; Maks 6 paket</div>
+        </div>
+        <div class="q-ans">
+          <strong>Kunci: B (Jeda &approx;228 dtk; Maks 15 paket/jam)</strong>.<br>
+          1. Regulasi 1%: t_off &ge; 99 x t_air = 99 x 2,302 s &approx; <strong>227,9 detik</strong>.<br>
+          2. Total waktu 1 siklus = 2,302 + 227,9 = <strong>230,2 detik</strong>.<br>
+          3. Maks paket/jam = 3.600 / 230,2 &approx; 15,64 &rArr; <strong>15 paket per jam</strong>.
+        </div>
+      </div>
+
+      <!-- SOAL 10 -->
+      <div class="q-item tech">
+        <div class="q-header">
+          <span>10. Teorema Nyquist vs Deadband Reporting</span>
+          <span class="q-type type-tech">Perhitungan</span>
+        </div>
+        <div class="q-text">Fluktuasi suhu tangki memiliki frekuensi maksimum f_max = 0,001 Hz. Sistem mencuplik tiap 100 detik (f_s = 0,01 Hz), namun memakai Deadband Reporting (&Delta;T &gt; 0,5&deg;C) sehingga transmisi radio hanya terjadi rata-rata 1 kali tiap 2 jam (7.200 detik). Berapa persen energi transmisi radio yang dihemat dibanding sistem naif yang memancar tiap cuplikan?</div>
+        <div class="q-opts">
+          <div>a. 50,0%</div><div>b. 85,2%</div>
+          <div>c. 98,6%</div><div>d. 99,9%</div>
+        </div>
+        <div class="q-ans">
+          <strong>Kunci: C (98,6%)</strong>.<br>
+          1. Cek Nyquist: f_s_min = 2 x 0,001 = 0,002 Hz (T &le; 500 s). Periode 100 s aman.<br>
+          2. Dalam 2 jam (7.200 s), sistem naif kirim radio: 7.200 / 100 = <strong>72 kali</strong>.<br>
+          3. Sistem deadband mencuplik 72x di RAM, namun radio hanya memancar <strong>1 kali</strong>.<br>
+          4. Penghematan transmisi = (72 - 1) / 72 x 100% = <strong>98,61%</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

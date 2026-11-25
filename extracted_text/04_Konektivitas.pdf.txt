@@ -1,0 +1,417 @@
+=== FILE: 04_Konektivitas.pdf (Pages: 34) ===
+
+--- PAGE 1 ---
+Desain dan Aplikasi IoT 
+Desain dan Aplikasi IoT
+Konektivitas I: Teknologi Jarak Pendek
+Muhtadin.
+Desain dan Aplikasi IoT  ·  Teknik Sistem Komputer ITS
+
+--- PAGE 2 ---
+Desain dan Aplikasi IoT 
+Enam blok Pembangun IoT
+● Enam blok bangunan: penginderaan → node → konektivitas → gateway → platform → aplikasi
+
+--- PAGE 3 ---
+Desain dan Aplikasi IoT 
+Menyambung ke Apa?
+96% energi sekali kirim habis untuk menyambung.
+Minggu lalu kita berhenti di situ.
+Hari ini: menyambung ke apa?
+Dan apakah "menyambung" itu selalu harus terjadi?
+Tiga fakta dari minggu lalu yang akan kita uji hari ini:
+Fakta Angka
+Energi menyambung Wi-Fi 100 µAh — 96% dari sekali kirim
+Umur node atap dengan Wi -Fi 92 hari
+Kebutuhan yang kita tulis sendiri ≥ 365 hari
+
+--- PAGE 4 ---
+Desain dan Aplikasi IoT 
+Perbandingan Teknologi Konektivitas
+"Teknologi konektivitas mana yang terbaik?"
+"Kendala mana yang paling mengikat pada kasus yang 
+dihadapi, dan teknologi mana yang paling sedikit
+melanggar Batasan tersebut?"
+● Ingin jangkauan lebih jauh pada daya yang sama → korbankan data rate
+● Ingin data rate lebih tinggi pada jangkauan yang sama → korbankan daya
+● Ingin daya lebih hemat → korbankan kesiapan (node harus tidur, jadi tidak
+bisa dihubungi kapan saja)
+● Ingin biaya per node lebih murah → sering berarti biaya infrastruktur naik
+Trade-off ini bukan kelemahan rekayasa yang suatu hari akan diperbaiki. Ia 
+hukum fisika, dan slide berikutnya menunjukkan rumusnya.
+
+--- PAGE 5 ---
+Desain dan Aplikasi IoT 
+HUKUM FISIKA YANG MENGIKAT
+Mengapa tidak ada teknologi yang unggul di empat sumbu sekaligus
+
+--- PAGE 6 ---
+Desain dan Aplikasi IoT 
+Theorema Shannon
+mengapa tidak ada teknologi yang unggul di keempat sumbu?
+C = B log₂(1 + S / N)
+C = data rate (berapa bit per detik yang bisa dikirim) · B = bandwidth (lebar pita frekuensi
+yang dipakai, dalam Hz) · S/N = SNR, signal-to-noise ratio — seberapa kuat sinyal
+dibandingkan noise, yaitu derau latar yang selalu ada
+Bandwidth SNR Data rate maksimum
+1 MHz 0 dB 1,00 Mbit/dtk
+1 MHz 10 dB 3,46 Mbit/dtk
+1 MHz 20 dB 6,66 Mbit/dtk
+1 MHz 30 dB 9,97 Mbit/dtk
+Baca tabel itu terbalik, dan Anda mendapat jawabannya: Menjauh dari pemancar berarti
+S/N turun. Untuk tetap bisa berkomunikasi, Anda hanya punya tiga pilihan: (a) naikkan
+transmit power → boros · (b) lebarkan pita → mahal dan terbatas regulasi · (c) turunkan
+data rate → gratis.
+Hampir semua teknologi jarak jauh memilih (c). Itulah sebabnya LoRa lambat, dan itulah
+sebabnya ia jauh.
+
+--- PAGE 7 ---
+Desain dan Aplikasi IoT 
+Link Budget
+Link budget — berapa banyak "uang" daya yang Anda punya untuk satu link radio, dalam dB.
+Link budget (dB) = P tx - S sensitivity
+Ptx = transmit power (daya yang dipancarkan) · S sensitivity = receiver sensitivity (sinyal terlemah yang masih bisa dibaca
+penerima)
+Lalu digunakan untuk:
+Pos belanja Contoh khas
+Path loss — redaman karena jarak 60 dB pada 10 m · 80 dB pada 100 m (2,4 GHz)
+Obstruction loss — redaman karena penghalang dinding bata 8 dB · beton bertulang 25 dB
+Antenna & connector loss — rugi di kabel dan sambungan 1–3 dB, sering terlupakan
+Fade margin — cadangan dB yang sengaja disisakan 10–20 dB — untuk hujan, orang lewat, penuaan, pergeseran
+Antenna gain — tambahan dB dari antena +2 sampai +9 dBi, satu-satunya pos yang menambah
+Aturan praktis yang perlu dihafal: +6 dB = jarak 2× · +20 dB = jarak 10× · −3 dB = daya setengah
+
+--- PAGE 8 ---
+Desain dan Aplikasi IoT 
+Link Budget dalam (lanjutan)
+digunakan
+
+--- PAGE 9 ---
+Desain dan Aplikasi IoT 
+Path Loss: Bayar di Muka
+Free-space path loss (FSPL) — redaman sinyal yang terjadi hanya 
+karena jarak, tanpa penghalang apa pun:
+FSPL (dB) = 20log₁₀ d + 20log₁₀ f + 32,44  [d  dalam 
+km,  f  dalam MHz]
+Jarak 868 MHz 2,4 GHz
+1 m 31,2 dB 40,0 dB
+10 m 51,2 dB 60,0 dB
+50 m 65,2 dB 74,0 dB
+100 m 71,2 dB 80,0 dB
+500 m 85,2 dB 94,0 dB
+1 km 91,2 dB 100,0 dB
+Perhatikan bentuknya: dari 1 m ke 10 m Anda membayar 20 dB. Dari 10 
+m ke 100 m, 20 dB lagi. Path loss logaritmik — sepuluh meter pertama 
+semahal sembilan puluh meter berikutnya.
+
+--- PAGE 10 ---
+Desain dan Aplikasi IoT 
+Sensitivitas: Variabel yang menentukan
+Teknologi Transmit power Sensitivitas Link budget Jangkauan ruang bebas*
+Wi-Fi 802.11n @ 65 Mbit/dtk +20 dBm −70 dBm 90 dB 315 m
+Wi-Fi 802.11n @ 1 Mbit/dtk +20 dBm −90 dBm 110 dB 3.146 m
+BLE 1M PHY 0 dBm −93 dBm 93 dB 444 m
+BLE Coded PHY 125 kbit/dtk 0 dBm −103 dBm 103 dB 1.405 m
+802.15.4 / Zigbee / Thread 0 dBm −100 dBm 100 dB 995 m
+802.11ah HaLow (sub-GHz) +20 dBm −98 dBm 118 dB 21 km
+Batas atas teoretis di ruang bebas tanpa penghalang dan tanpa margin. Di dalam gedung, bagi 10–50.*
+Catatan : IEEE 802.15.4 hanya mewajibkan transmit power ≥ 3 dBm dan sensitivitas −85 dBm pada 2,4 GHz (−91 dBm pada 
+868/915 MHz). Angka −100 dBm di tabel adalah capaian silikon modern, dan selisih 15 dB setara 5,6× jarak.
+Perhatikan dua baris BLE. Perangkat keras yang sama. Transmit power yang sama. Yang berubah hanya data rate-nya — dan 
+jangkauannya naik 3,2×. Inilah theorema Shannon, dalam bentuk yang bisa Anda beli.
+
+--- PAGE 11 ---
+Desain dan Aplikasi IoT 
+Sensitivitas: Variabel yang menentukan
+
+--- PAGE 12 ---
+Desain dan Aplikasi IoT 
+2,4 GHz atau Sub-GHz
+2,4 GHz Sub-GHz (868/915 MHz)
+Path loss acuan 8,8 dB lebih baik = jarak 2,8×
+Tembus dinding lebih buruk lebih baik
+Bandwidth tersedia lebar → data rate tinggi sempit → data rate rendah
+Ukuran antena kecil (λ/4 ≈ 3,1 cm) besar (λ/4 ≈ 8,6 cm)
+Keramaian sangat ramai — Wi-Fi, BLE, Zigbee, oven mikro lebih lengang
+Keberlakuan global satu pita untuk seluruh dunia beda negara beda pita
+Indonesia: pita 920–923 MHz untuk perangkat jarak pendek sub-GHz. Periksa regulasi yang berlaku sebelum memesan modul — modul 868 MHz Eropa dan 915 MHz Amerika tidak
+otomatis sah dipakai di sini.
+Tiga pita 802.15.4 :
+Pita Jumlah kanal Data rate Wilayah
+868,3 MHz 1 (kanal 0) 20 / 100 / 250 kbps Eropa
+902–928 MHz 10 (kanal 1–10) 40 / 250 kbps Amerika Utara, Australia
+2405–2480 MHz 16 (kanal 11–26) 250 kbps seluruh dunia
+Pita 868 MHz hanya punya satu kanal. Sub-GHz menang di fisika, lalu kalah di jumlah kanal dan keberlakuan global — dan itulah sebabnya 2,4 GHz tetap menang di pasar.
+
+--- PAGE 13 ---
+Desain dan Aplikasi IoT 
+Beton Memakan Link Budget Anda
+Peluruhan satu penghalang pada 2,4 GHz :
+Penghalang Rugi Setara memperjauh node
+Dinding gipsum / kaca 3 dB 1,4×
+Dinding bata 8 dB 2,5×
+Dinding beton 20 cm 15 dB 5,6×
+Lantai beton 20 dB 10×
+Beton bertulang 25 dB 17,8×
+Tubuh manusia 3–6 dB 1,4–2×
+Satu lantai beton = memindahkan node Anda sepuluh kali lebih jauh.
+Node yang bekerja sempurna di laboratorium lantai 3 bisa mati total ketika
+dipasang di lantai 1, tanpa ada satu pun yang berubah pada 
+perangkatnya.
+
+--- PAGE 14 ---
+Desain dan Aplikasi IoT 
+RSSI: Apa yang Diukur, Apa yang Tidak
+RSSI (Received Signal Strength Indicator) - kekuatan sinyal yang diterima, dalam dBm. Selalu negatif.
+RSSI Artinya untuk 2,4 GHz
+−30 dBm Sangat kuat — Anda berdiri di sebelahnya
+−67 dBm Baik — cukup untuk suara/video
+−80 dBm Lemah — masih jalan untuk telemetri kecil
+−90 dBm Di ambang — paket mulai hilang
+−100 dBm Praktis putus
+Yang bukan merupakan sifat RSSI :
+1.  Bukan jarak. Hubungannya logaritmik dan sangat dipengaruhi penghalang serta pantulan. Dua node pada jarak sama bisa
+berbeda 20 dB.
+2.  Bukan kualitas link. RSSI kuat dengan noise yang juga kuat tetap buruk. Yang menentukan adalah SNR, bukan RSSI.
+3.  Bukan angka yang bisa dibandingkan antar-pabrikan. Definisi dan kalibrasinya berbeda antar-chipset. Bandingkan RSSI hanya
+dalam satu perangkat yang sama.
+Yang benar-benar menentukan apakah sistem Anda bekerja bukan RSSI, melainkan packet delivery ratio (PDR) — berapa persen paket
+yang benar-benar sampai.
+
+--- PAGE 15 ---
+Desain dan Aplikasi IoT 
+RSSI: Apa yang Diukur, Apa yang Tidak  (lanjutan)
+
+--- PAGE 16 ---
+Desain dan Aplikasi IoT 
+Latihan 1
+Node BLE di atap gedung, penerima di ruang teknisi lantai dasar. Di antaranya: 3 lantai beton dan 1 dinding bata. Node 
+memancar 0 dBm. Penerima: BLE 1M PHY , sensitivitas −93 dBm. Jarak garis lurus 25 m.
+1.  Berapa link budget-nya?
+2.  Berapa free-space path loss pada 25 m, 2,4 GHz? (petunjuk: 10 m = 60 dB)
+3.  Berapa total obstruction loss-nya?
+4.  Apakah link ini bekerja? Berapa margin yang tersisa?
+5.  Kalau gagal, ubah satu hal saja. Apa yang Anda ubah?
+
+--- PAGE 17 ---
+Desain dan Aplikasi IoT 
+KONEKSI JARAK PENDEK DAN CONNECTION 
+SETUP-NYA
+Dan connection setup yang menentukan harganya
+
+--- PAGE 18 ---
+Desain dan Aplikasi IoT 
+Connection Setup: Faktor yang Menentukan
+Connection setup — seluruh rangkaian langkah sebelum satu byte berguna boleh dikirim · scan — mendengarkan dulu siapa yang ada di sekitar · association —
+mendaftar resmi menjadi anggota jaringan · advertising — memancarkan paket pendek berkala tanpa perlu ada yang menyambung · connection — hubungan dua 
+arah yang terikat dan dipelihara.
+Langkah sebelum boleh mengirim Lama khas Energi radio per laporan
+Wi-Fi scan → autentikasi → asosiasi → 4-way WPA2 → DHCP → ARP → TCP → TLS → MQTT 1–4 dtk 100 µAh
+BLE (connection) advertising → connection request → parameter exchange → GATT 100–300 ms ±0,3 µAh
+BLE (advertising saja) tidak ada — langsung broadcast 1–3 ms 0,008 µAh
+Zigbee / Thread bergabung sekali saat pemasangan, lalu tetap anggota 10 ms per kirim ±0,08 µAh
+ESP-NOW tidak ada — alamat tetangga sudah tersimpan 3–5 ms ±0,17 µAh
+Wi-Fi memakan 1.200 kali energi Zigbee untuk mengirim satu laporan yang sama. Dan bukan karena datanya lebih besar — datanya identik. Yang mahal adalah 
+connection setup-nya.
+
+--- PAGE 19 ---
+Desain dan Aplikasi IoT 
+Wi-Fi: Mahal, tapi Sudah Banyak Access Point
+Varian Pita Data rate Catatan untuk IoT
+802.11 b/g/n 2,4 GHz 11–150 Mbit/dtk Yang dipakai hampir semua modul IoT
+802.11 ac/ax 5/6 GHz ratusan Mbit/dtk Jangkauan lebih pendek, jarang untuk node
+802.11ax (Wi-Fi 6) 2,4/5/6 GHz — TWT — lihat di bawah
+802.11ah (HaLow) sub-GHz 150 kbit/dtk–ratusan Jangkauan ±1 km, perangkat masih langka
+Dua hal yang mengubah Wi-Fi untuk IoT:
+● TWT — Target Wake Time (802.11ax). Node dan access point bersepakat kapan node akan bangun. Di antara janji itu, radio 
+boleh mati total. Ini menghapus sebagian besar biaya "tetap terjaga", tetapi tidak menghapus biaya penyambungan awal.
+● 802.11ah HaLow. Wi-Fi di pita sub-GHz: link budget 118 dB, jangkauan ±1 km, ribuan node per access point. Di atas kertas
+inilah jawaban yang kita cari — masalahnya ketersediaan perangkat keras.
+Alasan sesungguhnya Wi-Fi dipilih di gedung jarang bersifat teknis. Infrastrukturnya sudah ada dan sudah dibayar orang lain, 
+dan setiap mahasiswa sudah tahu cara memakainya.
+
+--- PAGE 20 ---
+Desain dan Aplikasi IoT 
+Bluetooth : Piconet, Scatternet.
+Satu master + slave-nya = piconet. Beberapa piconet yang bertaut = scatternet.
+BR/EDR (Bluetooth klasik) BLE
+Lebar alamat dalam piconet 3 bit 24 bit
+Slave aktif maksimum 7 praktis jutaan
+Kanal semua slave berbagi satu jadwal hop (perpindahan kanal) tiap pasangan punya kanalnya sendiri
+Keadaan node master · slave · standby · parked (dihapus di BT 5) master · slave · standby
+Batas tujuh slave itu nyata.
+Rancangan "satu ponsel membaca 20 sensor Bluetooth klasik" tidak bisa jalan — bukan karena jangkauan, bukan karena daya, melainkan karena lebar medan alamat 
+yang diputuskan pada tahun 1998. Dengan BLE, rancangan yang sama berjalan tanpa masalah.
+
+--- PAGE 21 ---
+Desain dan Aplikasi IoT 
+BLE: Advertising, Connection, dan GATT
+Dua cara BLE bekerja — dan perbedaannya menentukan segalanya:
+Advertising (broadcast, satu arah) Connection (dua arah, terikat)
+Arah satu arah dua arah
+Perlu lawan bicara? tidak ya
+Payload ±31 byte (lebih, dengan extended advertising) sebesar yang diperlukan
+Jaminan sampai tidak ada ada (retransmission link layer)
+Energi 0,008 µAh ±0,3 µAh
+Contoh pemakaian iBeacon, tag suhu, pelacak aset jam tangan 
+ ponsel, sensor 
+ gateway
+Versi Bluetooth dan permasalahan yang diselesaikan:
+Versi Yang ditambahkan Tahun
+1.1 RSSI 2002
+1.2 AFH — adaptive frequency hopping 2003
+2.0 EDR 3 Mbit/dtk 2004
+4.0 LE, ATT, GATT 2010
+4.2 LE secure connections, profil IPv6 2014
+5.0 2M PHY · LE long range · extended advertising · mesh 2016
+
+--- PAGE 22 ---
+Desain dan Aplikasi IoT 
+BLE: Advertising, Connection, dan GATT  (lanjutan)
+GATT — Generic Attribute Profile: cara BLE menyusun data sebagai pohon Service → Characteristic → Value, masing-masing 
+dengan UUID. Operasinya: read · write · notify (perangkat mendorong data tanpa diminta).
+Perhatikan: notify pada GATT adalah publish–subscribe dalam skala kecil — gaya MOM dari pertemuan 1, diterapkan di link layer.
+Tip lapangan yang langsung menghemat baterai : matikan scan response pada perangkat hemat daya. Perangkat yang mendukung
+SCAN_RSP harus menjaga radionya tetap menerima — meski tidak ada satu pun host yang bertanya. Bluetooth SIG memelihara 57 profil
+GATT baku, jadi periksa dulu sebelum membuat sendiri.
+
+--- PAGE 23 ---
+Desain dan Aplikasi IoT 
+BLE: Coded PHY dan BLE Mesh
+Empat physical layer BLE (sejak 5.0):
+PHY Data rate Sensitivitas Jangkauan relatif
+1M (baku) 1 Mbit/dtk −93 dBm 1×
+2M 2 Mbit/dtk −90 dBm 0,7×
+Coded S=2 500 kbit/dtk −98 dBm 1,8×
+Coded S=8 125 kbit/dtk −103 dBm 3,2×
+BLE Mesh — layer tersendiri di atas BLE, bukan bagian dari BLE biasa:
+● Bekerja dengan flooding (flood), bukan merutekan → sederhana, tetapi boros
+● Node relay tidak boleh tidur — mesh tax yang sama dengan Zigbee
+● Node low power boleh tidur, tetapi harus menitip pesan ke node friend
+● Cocok untuk pencahayaan gedung; kurang cocok untuk telemetri berbaterai yang jarang
+Modelnya publish–subscribe dengan alamat grup: saklar mem-publish, lampu ber-subscribe.
+
+--- PAGE 24 ---
+Desain dan Aplikasi IoT 
+BLE: Coded PHY dan BLE Mesh  (lanjutan)
+
+--- PAGE 25 ---
+Desain dan Aplikasi IoT 
+Masalah yang Wi-Fi dan Bluetooth Sama-sama Gagal
+Gedung tiga lantai. 60 titik: lampu, saklar, sensor suhu, sensor pintu. Sebagian berlistrik, sebagian berbaterai. Semua harus saling bicara dan terhubung ke
+satu pusat.
+Kalau dipakai… Yang terjadi
+Wi-Fi Tiap node butuh access point dalam jangkauan. Yang berbaterai habis dalam hitungan hari — sekali lapor memakan 1.200× energi Zigbee
+Bluetooth (BLE) Hemat, tetapi jangkauannya pendek dan tidak bisa diperpanjang. Node di ujung lorong lantai 3 tidak terjangkau apa pun
+Keduanya gagal pada hal yang sama:
+tidak ada cara memperluas jangkauan tanpa memasang infrastruktur baru.
+Wi-Fi: tambah access point. Bluetooth: tidak bisa. Dan memasang access point di tiap sudut gedung hanya untuk sensor pintu adala h jawaban yang mahal 
+dan konyol.
+
+--- PAGE 26 ---
+Desain dan Aplikasi IoT 
+Zigbee: Perangkat Berbicara LEWAT Satu Sama Lain
+Wi-Fi & Bluetooth Zigbee
+Arah bicara perangkat → ke infrastruktur perangkat → lewat perangkat lain
+Memperluas jangkauan tambah infrastruktur tambah perangkat biasa
+Satu perangkat mati yang lain tetap jalan jalur dicari ulang otomatis
+Satu kalimat yang menjelaskan seluruh Zigbee:
+Pesan dioper dari perangkat ke perangkat sampai tiba.
+Akibatnya langsung terasa:
+● Jangkauan tumbuh ketika Anda menambah lampu, bukan ketika Anda menambah access point
+● Lampu lantai 1 bisa mengirim pesan ke pusat lewat lampu lantai 2, meski tidak saling menjangkau langsung
+● Satu lampu dilepas? Pesan mencari jalan lain sendiri. Tidak ada yang perlu Anda atur ulang
+Catatan: radio yang dipakai Zigbee bernama IEEE 802.15.4.
+
+--- PAGE 27 ---
+Desain dan Aplikasi IoT 
+Zigbee: Perangkat Berbicara LEWAT Satu Sama Lain  
+(lanjutan)
+
+--- PAGE 28 ---
+Desain dan Aplikasi IoT 
+Tiga Macam Node, dan Hanya Satu yang Boleh Tidur
+Macam node Tugasnya Boleh tidur? Dayanya
+Coordinator satu per jaringan. Yang memulai jaringan dan memegang daftar anggota
+ listrik
+Router meneruskan pesan tetangga, selain mengurus dirinya sendiri
+ listrik
+End Device hanya bicara untuk dirinya sendiri. Tidak meneruskan apa pun
+ baterai
+Mengapa router tidak boleh tidur? Karena ia tidak tahu kapan tetangganya akan mengirim. Agar tidak ada pesan yang hilang, 
+penerimanya harus menyala terus. Itu bukan pilihan perancang Zigbee — itu konsekuensi yang tidak bisa dihindari.
+Aturan sederhana yang menyelesaikan 90% rancangan:
+Yang dapat listrik dari dinding → jadikan Router
+Yang pakai baterai → jadikan End Device
+Lampu, saklar dinding, stopkontak pintar, panel → Router. Sensor suhu, sensor pintu, sensor kelembapan tanah → End Device.
+
+--- PAGE 29 ---
+Desain dan Aplikasi IoT 
+Tiga Macam Node, dan Hanya Satu yang Boleh Tidur  
+(lanjutan)
+
+--- PAGE 30 ---
+Desain dan Aplikasi IoT 
+Harganya: Node yang Tidak Boleh Tidur
+Sensor yang sama persis, baterai yang sama persis — dua AA, 2000 mAh:
+Perannya Arus rata-rata Umur baterai
+End Device (bangun 10 ms tiap 15 menit) 0,0023 mA dibatasi baterainya sendiri, bukan nodenya — hitungannya puluhan tahun
+Router (penerima menyala terus) 20 mA 4 hari
+Selisih arusnya ±8.500×.
+Perangkat yang sama. Baterai yang sama. Hanya perannya yang berbeda.
+Satu aturan rancangan yang tidak boleh dilanggar:
+Jangan pernah menjadikan node berbaterai sebagai Router.
+Dan sebaliknya: kalau di gedung Anda tidak ada perangkat berlistrik yang bisa dijadikan router, Zigbee bukan pilihan yang 
+tepat , berapa pun bagusnya spesifikasinya.
+
+--- PAGE 31 ---
+Desain dan Aplikasi IoT 
+Kapan Wi-Fi, Kapan Bluetooth, Kapan Zigbee
+Wi-Fi Bluetooth (BLE) Zigbee
+Butuh infrastruktur apa access point (biasanya sudah ada) ponsel / gateway di dekatnya node berlistrik yang tersebar
+Cara menjangkau lebih jauh tambah access point tidak bisa tambah node biasa
+Energi sekali lapor 100 µAh 0,008 µAh 0,083 µAh
+Node berbaterai bertahan hari–minggu bulan–tahun tahun (sebagai end device)
+Kirim gambar / video
+Puluhan node satu gedung perlu banyak access point sulit
+ inilah tempatnya
+Langsung ke internet
+ lewat ponsel/gateway lewat gateway
+Pilih Wi-Fi bila datanya besar, perangkatnya berlistrik, dan access point sudah ada. Pilih BLE bila lawan bicaranya ponsel, atau satu sensor dekat satu penerima. 
+Pilih Zigbee bila banyak titik tersebar di gedung, sudah ada perangkat berlistrik, dan sensornya harus bertahan bertahun-tahun.
+
+--- PAGE 32 ---
+Desain dan Aplikasi IoT 
+Rangkuman
+INTI  ·  2 mnt  ·  42
+1. Tidak ada teknologi yang unggul di empat sumbu, dan alasannya
+Shannon
+2. Link budget dibelanjakan untuk jarak, penghalang, dan margin · +6 dB = 2×
+jarak
+3. Satu lantai beton = memindahkan node 10× lebih jauh
+4. Yang menentukan energi bukan data rate, melainkan connection setup
+— Wi-Fi 1.200× Zigbee untuk data yang sama
+Pada IoT : periksa dulu apa yang mendominasi, baru optimasi.
+
+--- PAGE 33 ---
+Desain dan Aplikasi IoT 
+Bacaan dan Minggu Depan
+INTI  ·  2 mnt  ·  43
+Bacaan sebelum pertemuan 5:
+● Hanes dkk. (Cisco), Bab 4 — selesaikan bagian LPWAN
+● Perry Lea, Bab 7 — sistem komunikasi jarak jauh (WAN)
+● (sudah dipakai hari ini: Perry Lea Bab 5 — Bluetooth, 802.15.4, Zigbee, Z-Wave. Bab 6 — Thread, 6LoWPAN, Wi-Fi — menjadi bacaan 
+pertemuan 6)
+● NPTEL Introduction to IoT — Minggu 4
+
+--- PAGE 34 ---
+Desain dan Aplikasi IoT 
+Penutup
+CEPAT  ·  1 mnt  ·  44
+Konektivitas yang tepat bukan yang paling jauh,
+bukan yang paling cepat,
+dan bukan yang paling hemat.
+Konektivitas yang tepat adalah yang
+melanggar paling sedikit kendala yang benar-benar mengikat —
+dan Anda hanya tahu yang mana itu setelah mengukur.
+

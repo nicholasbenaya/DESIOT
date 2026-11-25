@@ -1,0 +1,741 @@
+=== FILE: 03_Node_IoT.pdf (Pages: 52) ===
+
+--- PAGE 1 ---
+Desain & Aplikasi IoT
+Node IoT: Energi, Ketidakpastian, dan Laju Cuplik
+Pertemuan 3 · Sensor untuk mesin yang ditinggal sendirian
+Desain dan Aplikasi IoT · Teknik Sistem Komputer ITS
+
+--- PAGE 2 ---
+Desain & Aplikasi IoT
+Di Mana Kita Sekarang
+•  Enam blok bangunan: penginderaan → node → konektivitas → gateway → platform → aplikasi
+•  Minggu ini kita menaiki blok 1 dan 2 — untuk pertama kalinya
+•  Minggu 1 memberi peta. Minggu 2 memberi metode. Minggu ini kita mulai membangun.
+
+--- PAGE 3 ---
+Desain & Aplikasi IoT
+Pembuka: Sebuah Pertanyaan yang Tidak Bisa Dijawab
+Sensor ini sudah delapan bulan di atap.
+Angkanya masih muncul rapi setiap lima belas menit.
+Bagaimana Anda tahu angka itu masih benar?
+
+--- PAGE 4 ---
+Desain & Aplikasi IoT
+Dari M2M ke IoT: Premis Hari Ini
+M2M IoT
+Hubungan Satu mesin ↔ satu mesin, langsung Node → gateway → internet → banyak konsumen
+Protokol Sering non-IP: serial, SMS, seluler khusus Berbasis IP, standar terbuka
+Arsitektur Vertikal, tertutup, per aplikasi Horizontal, berbagi platform
+Penekanan Perangkat keras Perangkat lunak dan data
+Skala & pengawasan Puluhan–ratusan, sering ada operatornya Ribuan–jutaan, tidak diawasi
+Perry Lea: "Keberadaan cara untuk menyambung ke jalinan internet itulah yang mendefinisikan IoT."
+Konsekuensinya untuk hari ini: begitu perangkat menjadi banyak dan tak berawak, tiga kendala yang dulu sepele menjadi penentu — 
+energi, kepercayaan pada data, dan laju cuplik.
+
+--- PAGE 5 ---
+Desain & Aplikasi IoT
+Pembagian Wilayah dengan Pengantar Robotika
+Robotika melatih sensor untuk mesin yang ada penjaganya.
+Mata kuliah ini melatih sensor untuk mesin yang ditinggal sendirian.
+Pengantar Robotika Desain & Aplikasi IoT
+Konteks Satu mesin, ada operatornya Ribuan node, tak diawasi berbulan-bulan
+Catu daya Kabel, atau baterai diisi harian Sekali pasang, harus tahan 1–10 tahun
+Laju cuplik ditentukan Dinamika sistem & teori kendali Anggaran energi dan biaya
+Kalibrasi Sekali, di lab, oleh Anda sendiri Massal, di lapangan, diverifikasi jarak jauh
+Sensor salah Robot menabrak — ketahuan 3 detik Tidak ada yang tahu, berbulan-bulan
+Pola kegagalan Seketika dan kasatmata Diam dan perlahan — drift
+Pertanyaan utama "Bagaimana cara membacanya?" "Berapa harganya, dan bolehkah saya percaya?"
+
+--- PAGE 6 ---
+Desain & Aplikasi IoT
+Tiga Pertanyaan yang Tidak Pernah Ditanyakan Robotika
+# Pertanyaan Blok hari ini
+1 Berapa lama node ini hidup, dan ke mana energinya pergi? Blok 1 · 28 menit
+2 Bolehkah saya percaya angka ini setelah delapan bulan? Blok 2 · 26 menit
+3 Seberapa sering harus mencuplik, dan berapa harganya? Blok 3 · 18 menit
+Ketiganya adalah satu pertanyaan yang sama, dilihat dari tiga sisi: apa yang terjadi pada sebuah alat ukur ketika tidak ada yang menjaganya?
+
+--- PAGE 7 ---
+Desain & Aplikasi IoT
+Rencana Hari Ini
+Blok Isi Menit
+1 Energi sebagai mata uang — ke mana energi pergi, anggaran, sumber daya, panen 28
+2 Bolehkah saya percaya angka ini — akurasi, drift, kalibrasi lapangan, sensor yang berbohong 26
+3 Laju cuplik sebagai keputusan ekonomi — cuplik murah, kirim mahal 18
+4 Praktikum, pembentukan kelompok, penutup 14
+Dua latihan kilat di tengah. Siapkan kertas dan kalkulator.  Praktikum hari ini: 🔧 ukur sendiri konsumsi arus ESP32 Anda dengan INA219.
+
+--- PAGE 8 ---
+Desain & Aplikasi IoT
+BLOK 1
+Energi sebagai mata uang
+Ke mana energi Anda sebenarnya pergi?
+
+--- PAGE 9 ---
+Desain & Aplikasi IoT
+Profil Arus Sebuah Node: Satu Siklus
+Satu siklus bangun–kirim–tidur, dari kiri ke kanan:
+Tahap Durasi khas Arus khas
+Boot & inisialisasi 200–500 ms 50–80 mA
+Baca sensor 20–100 ms 20–40 mA
+Menyambung Wi-Fi 1–4 detik 100–140 mA
+Kirim data 50–200 ms 120–180 mA
+Kembali tidur — 10 µA – beberapa mA
+Perhatikan baris ketiga. Menyambung jauh lebih lama dan lebih mahal daripada mengirim.
+
+--- PAGE 10 ---
+Desain & Aplikasi IoT
+Menghitung Anggaran Energi
+Arus rata-rata satu siklus:
+Umur baterai:
+Tiga hal yang hampir selalu dilupakan:
+1. Faktor derating — kapasitas nominal baterai tidak pernah terpakai 
+penuh. Pakai 0,7–0,8
+2. Self-discharge baterai (slide 17)
+3. Arus diam papan — regulator, LED, chip USB-serial (slide 12)
+Daftar periksa anggaran daya versi Perry Lea [PL hal. 66] — 
+delapan pos, gunakan sebagai borang:
+# Pos Sudah dihitung?
+1 Daya sensor saat aktif ☐
+2 Frekuensi pengambilan data ☐
+3 Kekuatan dan daya pancar radio ☐
+4 Frekuensi komunikasi ☐
+5 Daya MCU sebagai fungsi frekuensi clock ☐
+6 Daya komponen pasif ☐
+7 Rugi bocor dan ketidakefisienan regulator ☐
+8 Cadangan daya untuk aktuator dan motor ☐
+Pos 7 dan 8 hampir selalu hilang dari perhitungan mahasiswa. Pos 8 
+dibahas di slide 21.
+
+--- PAGE 11 ---
+Desain & Aplikasi IoT
+Empat Keadaan Daya dan Harganya
+ESP32, nilai khas — papan Anda akan berbeda
+Keadaan Arus khas Yang masih hidup
+Aktif + radio 100–180 mA CPU, RAM, radio
+Aktif, radio mati (modem-sleep) 20–40 mA CPU, RAM
+Light sleep ~0,8 mA RAM dipertahankan, cepat bangun
+Deep sleep ~10 µA RTC timer saja, RAM hilang
+Hibernation ~5 µA nyaris semuanya mati
+Dari aktif ke deep sleep: turun ~10.000 kali. Tidak ada tuas desain lain di mata kuliah ini yang sebesar itu.
+
+--- PAGE 12 ---
+Desain & Aplikasi IoT
+Datasheet 10 µA, Papan Anda 8 mA
+Datasheet ESP32: deep sleep ~10 µA. Papan DevKit yang sama, diukur: sering 3–10 mA — ratusan kali lipat.
+Ke mana perginya?
+Penyebab Arus khas Bisa dihilangkan?
+LED daya yang selalu menyala 2–5 mA Ya — cabut / potong jalurnya
+Regulator LDO (mis. AMS1117), arus diam 2–6 mA Ya — ganti regulator efisiensi tinggi
+Chip USB-serial (CP2102 / CH340) 0,3–2 mA Ya — pakai modul tanpa USB untuk produksi
+Pembagi tegangan pengukur baterai 0,05–0,5 mA Ya — beri MOSFET pemutus
+Purwarupa Anda tidak pernah bisa memenuhi anggaran energi produksi. Itu normal. Yang tidak normal adalah tidak mengetahui selisihnya.
+
+--- PAGE 13 ---
+Desain & Aplikasi IoT
+Ke Mana Energi Sebenarnya Pergi
+Satu siklus bangun–kirim, dirinci:
+Kegiatan Energi Porsi
+Membaca sensor (30 mA × 60 ms) 0,5 µAh 0,5%
+Menyambung Wi-Fi (120 mA × 3 dtk) 100 µAh 96%
+Mengirim data (150 mA × 0,1 dtk) 4,2 µAh 4%
+96% energi habis hanya untuk menyambung — bukan untuk mengirim.
+Konsekuensi langsung pada rancangan:
+•  IP statis, tanpa DHCP → hemat 0,5–1,5 detik
+•  Simpan kanal & BSSID, lewati pemindaian → hemat 1–2 detik
+•  Kirim sekaligus beberapa pembacaan, bukan satu per satu
+•  Pertimbangkan protokol tanpa asosiasi: ESP-NOW, LoRa — tidak ada "menyambung" sama sekali
+
+--- PAGE 14 ---
+Desain & Aplikasi IoT
+Duty Cycle: Satu-satunya Tuas yang Benar-benar Besar
+Node atap kita: 8 detik aktif dalam siklus 15 menit → duty cycle 0,9%
+Duty cycle Arus rata-rata Umur (3400 mAh, derating 0,8)
+100% 120 mA 1,2 hari
+10% 12 mA 11 hari
+1% 1,2 mA 113 hari
+0,1% 0,13 mA 871 hari
+Menurunkan duty cycle sepuluh kali menaikkan umur hampir sepuluh kali. Tidak ada keputusan lain di mata kuliah ini yang memberi pengaruh 
+sebesar ini.
+
+--- PAGE 15 ---
+Desain & Aplikasi IoT
+Bangun Itu Tidak Gratis
+Ongkos yang muncul setiap kali node bangun dari deep sleep:
+•  Boot ulang — RAM hilang, program mulai dari nol (200–500 ms)
+•  Lonjakan arus start — regulator dan baterai harus sanggup memberi arus pulsa
+•  Pemulihan sensor — banyak sensor butuh waktu stabil (settling time) sebelum bacaannya sah
+•  Penyambungan jaringan dari nol — lihat slide 13
+Akibatnya ada titik impas:
+Di bawah interval tertentu, light sleep lebih murah daripada deep sleep, karena ongkos bangun berulang mengalahkan penghematan saat tidur.
+
+--- PAGE 16 ---
+Desain & Aplikasi IoT
+Modul Nyata: 240 mAh, 44 Jam
+TI SensorTag CC2650 — modul acuan rancangan IoT, [PL hal. 61–66]
+Sepuluh sensor dalam satu papan seukuran kartu nama: cahaya (OPT3001) · suhu inframerah nirsentuh (TMP007) · akselerometer + 
+giroskop 9 sumbu (MPU-9250) · magnetometer, tekanan, altimeter (BMP280) · kelembapan (HDC1000) · mikrofon MEMS · reed relay · 2 
+tombol. Radio: BLE / Zigbee / 6LoWPAN. Otak: ARM Cortex-M3, 128 KB flash, 20 KB SRAM.
+Keadaan Arus
+Siaga (standby) 0,24 mA
+Menyala, semua sensor dimatikan 0,33 mA
+Semua sensor aktif @100 ms + siaran BLE 5,5 mA
+— di antaranya akselerometer + giroskop 4,68 mA
+— suhu · cahaya · barometer 0,84 · 0,56 · 0,50 mA
+Catu daya: satu sel koin CR2032 = 240 mAh
+Cara pakai Umur
+Semua sensor menyala terus 44 jam
+Siaga terus 41 hari
+Aktif 1 detik tiap 60 detik (rata-rata 0,33 mA) 30,5 hari
+Satu papan yang sama. Tiga cara pakai. Umurnya berbeda 17 kali lipat — dan tidak satu pun komponennya diganti.
+
+--- PAGE 17 ---
+Desain & Aplikasi IoT
+Baterai: Ketika Baterai Mengalahkan Beban
+Jenis Kapasitas khas Tegangan Self-discharge Catatan
+Alkaline AA ~2500 mAh 1,5 V 2–3%/tahun Murah; hambatan dalam tinggi, buruk untuk arus pulsa
+Li-ion 18650 2000–3500 mAh 3,7 V 2–3%/bulan Bisa diisi ulang; tidak boleh diisi di bawah 0 °C
+Li-SOCl₂ AA ~2400 mAh 3,6 V <1%/tahun Pilihan untuk umur 5–10 tahun. Perlu HLC untuk arus pulsa
+LiFePO₄ 1500–3000 mAh 3,2 V 3–5%/bulan Lebih aman, siklus panjang
+Angka yang mengejutkan — node kita, baterai Li-ion 3400 mAh:
+Interval Beban Self-discharge Porsi self-discharge
+15 menit 26,1 mAh/hari 3,4 mAh/hari 12%
+60 menit 7,0 mAh/hari 3,4 mAh/hari 33%
+Pada node yang sangat hemat, yang menghabiskan baterai bukan node Anda — melainkan baterainya sendiri.
+Dan self-discharge bukan satu-satunya yang menggerogoti [PL hal. 77]:
+Gejala Besarnya Dipercepat oleh
+Pemudaran kapasitas (capacity fade) Li-ion turun ±30% setelah 100–1.000 siklus suhu tinggi
+Self-discharge alkaline 15–20% per bulan menurut Perry Lea suhu tinggi
+Self-discharge Li-ion ±2%/bulan → umur simpan ±10 tahun suhu tinggi
+Semua baris punya pemercepat yang sama: panas. Node kita dipasang di atap Surabaya.
+
+--- PAGE 18 ---
+Desain & Aplikasi IoT
+Baterai Bukan T angki Bensin
+Tiga sifat baterai yang meruntuhkan perhitungan naif [PL hal. 73–77]:
+1 · Kapasitas bergantung pada seberapa cepat Anda menariknya — 
+efek Peukert
+Baterai 100 Ah yang habis dalam 20 jam tidak memberi 100 Ah bila 
+dihabiskan dalam 10 jam. (Kurva Peukert aslinya untuk lead-acid; pada sel 
+litium efek setaranya muncul sebagai jatuh tegangan saat pulsa radio.)
+2 · Tegangan tidak turun linear — dan brownout datang sebelum 
+energi habis Li-ion nyaris datar lalu jatuh mendadak di ujung → sisa daya 
+sangat sulit ditebak. Alkaline dan lead-acid turun perlahan → lebih mudah 
+diprediksi.
+Node mati ketika tegangan jatuh di bawah ambang MCU/radio — bukan ketika 
+miliamper-jam habis.
+3 · Kapasitas memudar karena siklus dan suhu — Li-ion turun ±30% 
+setelah 100–1.000 siklus, lebih cepat di lingkungan panas.
+Superkapasitor: pasangan, bukan pengganti [PL hal. 78]
+Li-ion Superkapasitor
+Rapat energi 200 Wh/kg 8–10 Wh/kg
+Siklus isi-buang turun setelah 100–1.000 hampir tak terbatas
+Waktu isi penuh 1–10 jam milidetik–detik
+Suhu kerja −20 … +65 °C −40 … +85 °C
+Umur pakai 0,5–5 tahun 5–20 tahun
+Biaya per kWh $250–$1.000 $10.000
+Pola hibrida yang lazim: baterai menyediakan energi, superkapasitor 
+menyediakan daya sesaat untuk pulsa radio. Dan satu keuntungan diam-diam: 
+tegangan superkap turun teratur, sehingga sisa energinya bisa dibaca — 
+sesuatu yang nyaris mustahil pada Li-ion.
+
+--- PAGE 19 ---
+Desain & Aplikasi IoT
+Panen Energi: Apa yang Nyata dan Apa yang Tidak
+Sumber Rapat daya khas Nyata untuk IoT?
+Surya, luar ruang 10–20 mW/cm² (terik)  ✓ Andalan utama
+Surya, dalam 
+ruang 10–100 µW/cm² ! Hanya untuk node ultra-hemat
+Termal (perbedaan 
+suhu)
+10–100 µW/cm² per 
+5 °C ! Perlu ΔT stabil — pipa, mesin
+Getaran / piezo 10–200 µW/cm³ ! Perlu getaran tetap — mesin industri
+RF ambien < 1 µW/cm²  ✗ Hampir selalu tidak cukup
+Jendela tempat panen energi hidup [PL hal. 68]: kira-kira 10 nW 
+– 100 mW. Di bawah 1 µW: jam tangan, tag RFID. Sekitar 10 mW: 
+sensor nirkabel, pemancar FM kecil. Di atas ±1 W (GSM, tablet, 
+gerinda): di luar jangkauan panen energi, titik.
+Tiga angka yang perlu Anda hafal [PL hal. 69–72]:
+Angka Artinya
+Surya 25 cm² pada efisiensi 12% → 300 mW puncak Efisiensi nyata hanya 8–20%
+Sudut 
+datang
+12% jatuh ke 10,4% pada sudut 
+30° dari tegak lurus
+Panel miring/berdebu = 
+kehilangan diam-diam
+Termoele
+ktrik
+ΔT 5 °C → 40 µW @ 3 V = 13,3 
+µA
+Efisiensi < 10%, tapi umur > 
+100.000 jam
+Pemeriksaan kenyataan: node kita tidur pada 20 µA. Satu TEG 
+dengan ΔT 5 °C menghasilkan 13,3 µA — bahkan tidak cukup untuk 
+menidurkannya. Untuk menutupi 1,23 mA rata-rata, Anda butuh ±92 
+unit.
+Aturan praktis: panen energi hanya masuk akal bila konsumsi 
+rata-rata node < 1 mA. Di atas itu, perbesar baterai — lebih 
+murah dan lebih andal.
+Node atap kita: 0,80 Wh/hari. Panel 2 Wp memanen 4,9 Wh/hari. 
+Margin 6×. (pertemuan 2, slide 41)
+
+--- PAGE 20 ---
+Desain & Aplikasi IoT
+Anggaran Energi Lengkap: Node Atap
+Komponen Nilai
+Aktif: 8 dtk @ 120 mA per siklus
+Tidur: 20 µA (papan produksi)
+Interval 15 menit
+Arus rata-rata (beban) 1,09 mA
+Self-discharge Li-ion 3400 mAh 0,14 mA
+Total 1,23 mA
+Kapasitas efektif (derating 0,8) 2720 mAh
+Umur tanpa panen 92 hari ✗
+Kebutuhan ≥ 365 hari
+Konsumsi harian 0,11 Wh/hari
+Panen panel 2 Wp (Surabaya) 4,9 Wh/hari
+Margin dengan surya 44× ✓
+Dengan self-discharge dan derating ikut dihitung, angka minggu lalu turun dari 130 menjadi 92 hari. Kesimpulannya tidak berubah — tetap butuh panen surya — tetapi 
+sekarang angkanya jujur.
+
+--- PAGE 21 ---
+Desain & Aplikasi IoT
+Aktuator: Anggaran yang Sama Sekali Berbeda
+Semua yang kita hitung sejauh ini adalah anggaran sensor. Aktuator bermain di liga lain [PL hal. 60]:
+Node kita (rata-rata) Solenoid kecil
+Tegangan 3,7 V 9–24 V
+Arus 1,23 mA 100 mA
+Daya 4,6 mW 2,4 W
+Gaya yang dihasilkan — ±5 N
+527×
+Satu kali membuka katup selama 10 menit = 16,7 mAh = 57% dari seluruh anggaran harian node (29,5 mAh/hari).
+Tiga konsekuensi rancangan:
+1. Aktuator hampir selalu punya catu daya sendiri; node hanya menutup relai atau MOSFET. Pada sistem tangki kita, pompa mengambil daya dari jala-
+jala — node hanya memberi perintah.
+2. Bila terpaksa menumpang baterai yang sama, aktuator harus menjadi pos tersendiri dalam anggaran — pos ke-8 pada daftar Perry Lea di slide 10.
+3. Pilih aktuator latching / bistabil bila memungkinkan: ia hanya memakai energi saat berpindah keadaan, bukan saat menahan keadaan. Katup 
+latching adalah alasan meteran air berbaterai bisa hidup bertahun-tahun.
+Solenoid industri bekerja pada ratusan volt. Di titik itu, node Anda bukan lagi "perangkat bertenaga baterai dengan sebuah keluaran" — ia adalah sistem 
+kendali, dan isolasi galvanis serta keselamatan menjadi bagian rancangan. (Kita kembali ke ini di pertemuan 14.)
+
+--- PAGE 22 ---
+Desain & Aplikasi IoT
+✍️  Latihan Kilat 1
+Tiga menit. Hitung sendiri.
+Node Anda: bangun 5 detik @ 100 mA, tidur 2 mA (papan DevKit apa adanya), interval 10 menit, baterai 2000 mAh.
+1. Berapa arus rata-ratanya?
+2. Berapa umur baterainya (pakai derating 0,8)?
+3. Kalau Anda memotong jalur LED daya dan arus tidur turun menjadi 0,5 mA — berapa umur barunya?
+4. Mana yang lebih berpengaruh: memotong LED, atau menggandakan interval menjadi 20 menit?
+
+--- PAGE 23 ---
+Desain & Aplikasi IoT
+BLOK 2
+Bolehkah saya percaya angka ini?
+Kegagalan yang paling mahal adalah kegagalan yang diam
+
+--- PAGE 24 ---
+Desain & Aplikasi IoT
+Memilih Sensor, Bukan Mengoperasikannya
+Robotika mengajarkan cara kerja sensor. Hari ini katalog yang sama kita pakai untuk pertanyaan yang berbeda: mana yang bertahan di lapangan, dan bagaimana ia gagal.
+Perry Lea membuka Bab 3 dengan lima kriteria pemilihan — biaya · fitur · ukuran · umur pakai · presisi — dan satu tugas arsitek [PL hal. 39]: "memahami mengapa data dari 
+sensor bisa tidak andal, dan bagaimana sebuah sensor gagal di lapangan."
+Empat sensor yang sama-sama "mengukur suhu" [PL hal. 42–44]:
+Sensor Rentang Respons Akurasi Kewajiban rancangan yang ditimbulkannya
+Termokopel −180 … +2.300 °C cepat rendah Kompensasi sambungan dingin + akurasi memudar karena penuaan
+RTD (Pt100) −200 … +600 °C lambat tinggi Arus eksitasi 1 mA → memanaskan dirinya sendiri; butuh 3–4 kawat
+Termistor NTC −50 … +150 °C cepat sedang Sangat tidak linear → butuh tabel atau persamaan Steinhart-Hart
+IC digital (DS18B20) −55 … +125 °C sedang ±0,5 °C Termurah dan termudah — tetapi rentangnya sempit
+Dan dua sensor yang sama-sama "mengukur cahaya" [PL hal. 46]:
+Fotoresistor (LDR) Fotodioda
+Kecepatan respons lambat (ms–detik) sangat cepat (ns)
+Linearitas buruk baik
+Biaya sangat murah lebih mahal
+Cocok untuk deteksi "terang/gelap" pengukuran intensitas
+Pesannya bukan isi tabelnya — itu bisa Anda cari kapan saja. Pesannya adalah kolom terakhir: setiap pilihan sensor melahirkan kewajiban rancangan yang harus Anda bayar di tempat lain 
+— kompensasi, kalibrasi, kabel tambahan, atau jadwal penggantian. Sensor yang "lebih akurat" hampir selalu yang paling menuntut.
+
+--- PAGE 25 ---
+Desain & Aplikasi IoT
+Empat Besaran yang Sering T ertukar
+Besaran Artinya Contoh pada sensor tangki
+Akurasi Seberapa dekat ke nilai sebenarnya Terbaca 100 cm, sebenarnya 106 cm → galat 6 cm
+Presisi (repeatability) Seberapa rapat pengulangan, benar atau tidak Sepuluh bacaan: 100,1 · 100,0 · 100,2 cm → presisi baik
+Resolusi Langkah terkecil yang bisa dibedakan ADC 12-bit pada rentang 0–200 cm → langkah 0,05 cm
+Sensitivitas Perubahan keluaran per perubahan masukan 10 mV per cm
+ ⚠️ Presisi tinggi bukan berarti akurat. Sensor yang selalu meleset 6 cm ke arah yang sama akan terlihat sangat meyakinkan di dashboard — dan 
+tetap salah.  ⚠️ Resolusi bukan akurasi. ADC 12-bit ESP32 punya langkah 0,05 cm, tetapi ketidaklinearannya sendiri bisa bernilai beberapa persen.
+
+--- PAGE 26 ---
+Desain & Aplikasi IoT
+Drift: Kegagalan yang Diam
+Drift = perubahan sistematis bacaan terhadap waktu, suhu, atau penuaan — meski besaran yang diukur tidak berubah.
+Sensor Drift khas Akibat setelah 1 tahun
+Termistor / DS18B20 ~0,02 °C/tahun Dapat diabaikan
+Sensor tekanan piezoresistif 0,1–0,5% FS/tahun Beberapa cm pada tangki 2 m
+Kelembapan tanah kapasitif Besar — korosi & elektrolisis Sering tak terpakai < 1 tahun
+Gas elektrokimia (CO, NO₂) Habis pakai, umur 1–2 tahun Berhenti akurat, tetap mengeluarkan angka
+pH Perlu kalibrasi ulang berkala Wajib dijadwalkan
+Yang membuat drift berbahaya bukan besarnya, melainkan sifatnya: ia perlahan, sistematis, dan tidak memicu satu pun alarm. Sensor yang 
+mati terang-terangan justru jauh lebih mudah ditangani.
+Perry Lea menyebutnya sebagai kewajiban arsitektural [PL hal. 41]: termokopel pun kehilangan akurasi karena penuaan logamnya, 
+sehingga "solusi IoT harus memperhitungkan perubahan sepanjang umur sebuah sensor." Artinya umur sensor adalah parameter 
+rancangan, sejajar dengan umur baterai — bukan urusan pemeliharaan yang dipikirkan belakangan.
+
+--- PAGE 27 ---
+Desain & Aplikasi IoT
+T ujuh Sumber Galat pada Node Lapangan
+# Sumber Contoh
+1 Suhu Kecepatan suara, tegangan referensi, hambatan — hampir semuanya bergantung suhu
+2 Catu daya Tegangan baterai turun → referensi ADC bergeser → bacaan bergeser
+3 Pemasangan Sensor miring, tidak di tengah, terlalu dekat dinding
+4 Lingkungan Debu, embun, sarang serangga, pantulan, busa di permukaan air
+5 Penuaan Korosi, elektrolit habis, perubahan mekanis
+6 Sensor memanaskan dirinya sendiri RTD dengan arus eksitasi 1 mA memanaskan elemennya sendiri [PL hal. 42]
+7 Rantai sinyal Penguat, jembatan Wheatstone, resolusi & ketidaklinearan ADC [PL hal. 55, 64]
+Sumber 1 dan 2 berubah setiap hari. Sumber 3 tetap — dan karena itu bisa dikalibrasi sekali. Sumber 4 dan 5 memburuk perlahan — dan karena itu 
+harus dipantau, bukan dikalibrasi.
+
+--- PAGE 28 ---
+Desain & Aplikasi IoT
+Kasus Nyata: Apa yang Bisa Salah pada Sensor T angki Kita
+Sensor ultrasonik JSN-SR04T pada tangki atap 150 cm:
+Masalah Akibat Penanganan
+Suhu tangki 25 → 50 °C Galat 6,6 cm (slide berikutnya) Kompensasi suhu — wajib
+Zona mati 25 cm Tangki hampir penuh → tidak terbaca Pasang sensor lebih tinggi, atau terima buta di 25 cm teratas
+Permukaan air beriak / berbusa Gema lemah, bacaan melompat Ambil median dari beberapa bacaan
+Pantulan dinding (tangki sempit) Terbaca lebih jauh dari sebenarnya Pasang tepat di tengah, arahkan tegak lurus
+Embun pada transduser Gema teredam, bacaan hilang Corong menghadap bawah, ventilasi
+Sensor miring 5° Terbaca +0,4% lebih jauh Kalibrasi satu titik saat pemasangan
+
+--- PAGE 29 ---
+Desain & Aplikasi IoT
+Galat yang Menghancurkan Kebutuhan Kita
+Kecepatan suara di udara bergantung suhu:
+Suhu Kecepatan suara
+20 °C 343,4 m/s
+25 °C (kalibrasi di lab) 346,4 m/s
+40 °C 355,5 m/s
+50 °C (tangki atap, siang terik) 361,6 m/s
+Bila dikalibrasi pada 25 °C lalu dipakai pada 50 °C: galat +4,4%
+Jarak ukur Galat
+100 cm 4,4 cm
+150 cm 6,6 cm
+200 cm 8,7 cm
+Kebutuhan kita minggu lalu: akurasi ± 2 cm.
+Suhu saja sudah melanggarnya tiga kali lipat.
+Penanganannya murah: satu sensor suhu (DS18B20, ± Rp 15.000) di dalam tangki,
+lalu hitung kecepatan suara dari suhu terukur — bukan dari angka tetap.
+
+--- PAGE 30 ---
+Desain & Aplikasi IoT
+Kalibrasi: Satu Titik, Dua Titik, Banyak Titik
+Jenis Yang dikoreksi Kapan cukup
+Satu titik (offset) Pergeseran tetap: y = x + b Galat pemasangan, bias tetap
+Dua titik (offset + gain) Pergeseran dan kemiringan: y = ax + b Sebagian besar sensor linear
+Banyak titik Ketidaklinearan Sensor melengkung — gas, ADC ESP32
+Kompensasi Besaran yang berubah: suhu, tegangan Bukan kalibrasi — dihitung tiap bacaan
+Kalibrasi ≠ kompensasi. Kalibrasi menangani galat yang tetap — dikerjakan sekali, disimpan. Kompensasi menangani galat yang berubah — dihitung pada setiap 
+pembacaan.
+Untuk tangki kita: kalibrasi dua titik saat pemasangan (tangki kosong & penuh), ditambah kompensasi suhu setiap bacaan.
+Contoh baku kompensasi dari Perry Lea [PL hal. 41] — cold junction compensation pada termokopel: termokopel tidak mengukur suhu, ia mengukur 
+selisih suhu antara dua sambungan. Maka sambungan acuannya harus diukur sendiri oleh sensor lain, lalu ditambahkan pada setiap bacaan.
+Itu contoh sempurna: bukan koreksi yang disimpan sekali, melainkan koreksi yang dihitung setiap kali, dari pengukuran lain. Persis bentuk yang sama dengan 
+kompensasi suhu kita pada sensor ultrasonik.
+
+--- PAGE 31 ---
+Desain & Aplikasi IoT
+Kalibrasi di Lapangan, pada Skala
+Di laboratorium: satu sensor, acuan tepercaya, Anda yang mengerjakan, suhu terkendali. Di lapangan: 40 node di 12 gedung, dipasang 
+teknisi, tidak ada acuan, cuaca apa adanya.
+Masalah Yang bisa dilakukan
+Tidak ada acuan tepercaya di lokasi Bawa satu alat acuan yang dikalibrasi; pakai bergiliran untuk semua node
+Teknisi bukan ahli sensor Prosedur satu halaman bergambar; node memandu lewat LED / aplikasi
+Nilai kalibrasi bisa hilang saat firmware diperbarui Simpan di NVS/EEPROM, bukan di dalam kode; sertakan versi kalibrasi
+Tidak ada yang tahu kapan terakhir dikalibrasi Kirimkan tanggal_kalibrasi sebagai metadata bersama data
+Kalibrasi harus diperiksa ulang tanpa memanjat Verifikasi jarak jauh: bandingkan dengan sensor tetangga atau dengan peristiwa yang diketahui
+Kalibrasi lapangan bukan masalah fisika — ia masalah prosedur dan logistik. Dan biayanya sering melebihi harga sensornya sendiri.
+
+--- PAGE 32 ---
+Desain & Aplikasi IoT
+Bagaimana Node T ahu Dirinya Sedang Sakit
+Minggu lalu kita menulis atribut status_sensor di information model. Hari ini kita membuatnya nyata. Enam pemeriksaan yang bisa 
+dijalankan node itu sendiri:
+Pemeriksaan Aturannya Menangkap
+Rentang fisik Nilai di luar 0–150 cm? Sensor lepas, kabel putus
+Laju perubahan Level melompat > 20 cm dalam 15 detik? Gema palsu, gangguan
+Nilai macet Sepuluh bacaan identik persis? Sensor beku / terhalang
+Kekuatan gema Amplitudo gema di bawah ambang? Embun, sarang, permukaan berbusa
+Uji silang Level naik, tapi pompa mati? Salah satu dari keduanya berbohong
+Denyut nadi (heartbeat) Tidak ada data > 3 siklus? Diam ≠ nol
+Aturan emasnya: node harus bisa berkata "saya tidak tahu" — dan itu berbeda dari "nilainya nol".
+
+--- PAGE 33 ---
+Desain & Aplikasi IoT
+Fusi Sensor: Konteks yang Tidak Dimiliki Satu Sensor
+Sebuah sensor suhu tahu suhunya naik. Ia tidak tahu mengapa.
+Fusi sensor = menggabungkan beberapa jenis sensor untuk 
+memperoleh konteks — bukan sekadar mengumpulkan lebih banyak 
+angka [PL hal. 59].
+Contoh Perry Lea: suhu naik + PIR mendeteksi banyak gerakan + 
+intensitas cahaya tinggi → sistem menyimpulkan "ruangan penuh orang 
+di siang terik" lalu menambah sirkulasi udara. Sensor suhu sendirian 
+tidak bisa membedakan itu dari pemanas yang rusak.
+Dua tempat fusi dapat dilakukan:
+Terpusat (cloud) Terdistribusi (node / edge)
+Yang dikirim seluruh data mentah ringkasan atau kesimpulan
+Biaya energi mahal (slide 40) murah
+Konteks lintas-node mudah sulit
+Kesiapan saat jaringan 
+putus tidak ada tetap bekerja
+Menggabungkan dua bacaan yang ketidakpastiannya berbeda — 
+bobot berdasarkan variansi:
+Sensor yang lebih tidak pasti otomatis mendapat bobot lebih kecil. 
+Metode lanjutannya: tapis Kalman dan jaringan Bayes — di luar 
+cakupan hari ini.
+Untuk tangki kita — tiga sumber yang saling memeriksa:
+Sumber Yang diketahuinya sendiri
+Ultrasonik level air (meragukan saat permukaan berbusa)
+Status relai pompa apakah perintah menyala sudah diberikan
+Sensor arus pompa apakah pompa benar-benar bekerja
+Ketiganya bersama menjawab pertanyaan yang tidak bisa dijawab satu pun 
+sendirian: "pompa menyala, arus mengalir, tetapi level tidak naik" → pipa 
+bocor atau katup tertutup. Itu bukan sekadar data yang lebih banyak. Itu 
+informasi baru yang tidak dimiliki sensor mana pun.
+
+--- PAGE 34 ---
+Desain & Aplikasi IoT
+Angka Saja Tidak Cukup: Metadata yang Wajib Ikut
+Yang biasanya dikirim mahasiswa: {"level": 112}
+Yang seharusnya dikirim:
+{
+  "level_cm": 112.0,
+  "satuan": "cm",
+  "waktu": "2026-09-29T10:32:04+07:00",
+  "node_id": "GKB-ATAP-01",
+  "status": "normal",
+  "suhu_c": 38.2,
+  "versi_kalibrasi": "2026-03-14",
+  "tegangan_baterai": 3.82,
+  "versi_firmware": "1.4.2"
+}
+Bidang Mengapa wajib
+Waktu + zona Data tanpa waktu yang jelas tidak bisa dipadukan dengan data lain
+Status Membedakan "tidak tahu" dari "nol"
+Suhu Memungkinkan menghitung ulang kompensasi di kemudian hari
+Versi kalibrasi Saat kalibrasi diperbaiki, Anda tahu data mana yang terdampak
+Tegangan baterai Peringatan dini; juga menjelaskan galat yang berkorelasi dengan baterai lemah
+
+--- PAGE 35 ---
+Desain & Aplikasi IoT
+✍️  Latihan Kilat 2
+Tiga menit. Berpasangan.
+Sensor Anda sudah delapan bulan di lapangan. Anda tidak boleh mendatanginya.
+Rancang satu uji yang bisa menjawab: "apakah sensor ini masih benar?"
+Tuliskan:
+1. Apa yang Anda bandingkan dengan apa
+2. Ambang apa yang membuat Anda menyatakan "mencurigakan"
+3. Apa yang sistem lakukan ketika ambang itu terlampaui
+
+--- PAGE 36 ---
+Desain & Aplikasi IoT
+Kesalahan Khas Soal Kepercayaan Data
+ ❌ Kesalahan  ✅ Perbaikannya
+Mengira grafik mulus = data benar Kerapian adalah tanda presisi, bukan akurasi
+Menampilkan desimal melebihi akurasi Tampilkan sesuai akurasi; sertakan ketidakpastiannya
+Memakai konstanta dari contoh kode Tanyakan: pada kondisi apa konstanta itu benar?
+Menyimpan nilai kalibrasi di dalam kode Simpan di NVS, beri versi, kirim sebagai metadata
+Mengirim angka tanpa status Angka tanpa status tidak bisa dipercaya
+Membuang data yang berstatus buruk Simpan dengan tanda — itu bukti untuk diagnosis
+Mengira sensor mati lebih buruk daripada sensor drift Sebaliknya — yang mati memicu alarm, yang drift tidak
+
+--- PAGE 37 ---
+Desain & Aplikasi IoT
+BLOK 3
+Laju cuplik sebagai keputusan ekonomi
+Mencuplik itu murah. Mengirim itu mahal.
+
+--- PAGE 38 ---
+Desain & Aplikasi IoT
+Nyquist dalam Sembilan Puluh Detik
+Mencuplik lebih lambat dari itu → aliasing: sinyal cepat menyamar menjadi sinyal lambat yang tampak masuk akal.
+Contoh pada kasus kita: pemakaian air berubah dalam skala menit. Mencuplik tiap 60 menit akan membuat lonjakan pemakaian jam 
+istirahat tampak seperti penurunan perlahan sepanjang siang.
+Ini pengingat, bukan materi baru — Anda sudah mendapatkannya di Sinyal dan Sistem. Yang baru ada di slide berikutnya.
+
+--- PAGE 39 ---
+Desain & Aplikasi IoT
+Di IoT, Nyquist Jarang Menjadi Pengikatnya
+Di Robotika / Sistem Kendali:
+Laju cuplik ditentukan oleh dinamika sistem. Nyquist dan margin fase yang memberi angkanya.
+Di IoT:
+Laju cuplik hampir selalu ditentukan oleh anggaran energi — jauh sebelum Nyquist menjadi pengikat.
+Nyquist menuntut Anggaran energi mengizinkan Yang mengikat
+Level tangki ≥ tiap 2 menit tiap 15 menit Energi
+Suhu ruangan ≥ tiap 5 menit tiap 10 menit Energi
+Getaran mesin ≥ 2 kHz — Nyquist (perlu catu daya tetap)
+Kualitas udara ≥ tiap 10 menit tiap 15 menit Energi
+Karena itu pertanyaannya bukan "berapa laju cuplik yang benar?" melainkan "berapa laju cuplik yang mampu saya bayar, dan apa yang hilang 
+karenanya?"
+
+--- PAGE 40 ---
+Desain & Aplikasi IoT
+Mencuplik Murah, Mengirim Mahal
+Kegiatan Energi
+Satu pembacaan sensor (30 mA × 60 ms) 0,5 µAh
+Satu kali kirim lewat Wi-Fi (sambung + kirim) 104 µAh
+Satu kali kirim = 208 kali pembacaan sensor
+Artinya laju cuplik dan laju kirim boleh — dan seharusnya — berbeda:
+Pola Energi per jam Data yang dilaporkan
+Cuplik 1 mnt, kirim 1 mnt (60×) 6.270 µAh 60 nilai mentah
+Cuplik 1 mnt, kirim 15 mnt (4×) 446 µAh 4 ringkasan dari 60 cuplikan
+Cuplik 15 mnt, kirim 15 mnt (4×) 418 µAh 4 nilai mentah
+Baris tengah memberi 15× lebih banyak informasi daripada baris bawah, dengan tambahan energi hanya 7%.
+
+--- PAGE 41 ---
+Desain & Aplikasi IoT
+Sensor Pintar: 1,4 GB/detik
+Tidak semua endpoint sederhana. Sistem penglihatan adalah sensor juga — dengan pipeline pemrosesan sendiri sebelum satu pun byte layak 
+dikirim [PL hal. 55–58]:
+ADC → optical clamp → white balance → koreksi piksel mati → debayer → reduksi derau → penajaman → konversi ruang warna → koreksi 
+gamma → chroma subsampling → encoder JPEG
+Laju data
+Kamera 1080p @ 60 fps melewati seluruh tahap ISP ±1,37 GB/detik
+Node tangki kita (200 byte tiap 15 menit) 0,22 byte/detik
+Selisih ± 6 × 10⁹
+Kesimpulan Perry Lea, kata demi kata [PL hal. 58]:
+"One would never stream raw Bayer image video to the cloud for processing — this work must be performed as close to the video sensor as possible."
+Sensor sederhana Sensor pintar
+Keluaran satu angka aliran data + kesimpulan
+Tempat keputusan diambil cloud boleh harus dekat sensor
+Yang dikirim ke hulu nilai peristiwa ("ada 3 orang")
+Ini bukan sekadar soal kamera. Ini hukum umum blok ini: semakin besar laju data mentah, semakin jauh titik keputusan harus bergeser ke arah sensor. Kita 
+akan memberinya nama — edge computing — di pertemuan 9.
+
+--- PAGE 42 ---
+Desain & Aplikasi IoT
+Empat Cara Mengurangi Pengiriman T anpa Kehilangan Informasi
+Teknik Cara kerjanya Hemat khas
+Agregasi Kirim min/maks/rata-rata dari N cuplikan 5–15×
+Deadband Kirim hanya bila berubah > ambang 3–20× (bergantung sinyal)
+Penggabungan (batching) Kumpulkan beberapa laporan, kirim dalam satu sambungan mendekati N×
+Pelaporan berbasis peristiwa Kirim saat melewati ambang, bukan terjadwal Besar, tapi tak menentu
+ ⚠️ Deadband dan pelaporan peristiwa wajib disertai *heartbeat*. Tanpa itu, sistem tidak bisa membedakan "tidak ada perubahan" dari "node sudah 
+mati".
+Untuk node atap kita: cuplik 1 menit → agregasi 15 menit → kirim min/maks/rata-rata + status + heartbeat.
+
+--- PAGE 43 ---
+Desain & Aplikasi IoT
+Laju Cuplik Adaptif: Kembali ke T emuan Minggu Lalu
+Minggu lalu kita merancang laju cuplik adaptif: 15 menit saat diam, 10 detik saat pompa menyala. Lalu kita menemukan harganya: 130 
+hari → 15,7 hari.
+Sekarang kita tahu mengapa — dan bagaimana memperbaikinya:
+Rancangan Yang terjadi Umur
+Adaptif naif: kirim tiap 10 dtk saat pompa ON 720 kali sambung Wi-Fi per jam 15,7 hari
+Adaptif cerdas: cuplik tiap 10 dtk, kirim tiap 5 menit 12 kali sambung per jam, data tetap rapat ≈ 110 hari
+Yang mahal ternyata bukan mencuplik cepat — melainkan mengirim cepat. Minggu lalu kita menyalahkan hal yang salah.
+
+--- PAGE 44 ---
+Desain & Aplikasi IoT
+Matriks Keputusan Laju Cuplik
+Empat pertanyaan, berurutan:
+# Pertanyaan Menentukan
+1 Keputusan apa yang diambil dari data ini? Kerapatan minimum yang berguna
+2 Seberapa cepat besaran ini berubah? Batas Nyquist
+3 Berapa lama saya sanggup tidak tahu? Interval laporan maksimum
+4 Berapa yang mampu saya bayar? Interval kirim
+Cuplik menurut pertanyaan 1–2. Kirim menurut pertanyaan 3–4. Keduanya tidak harus sama — dan biasanya memang tidak.
+Node atap kita: cuplik 1 menit (10 detik saat pompa ON) · kirim 15 menit (5 menit saat pompa ON) · heartbeat 1 jam
+
+--- PAGE 45 ---
+Desain & Aplikasi IoT
+Rangkuman Blok 3
+1. Di IoT, anggaran energi hampir selalu mengikat lebih dulu daripada Nyquist
+2. Mencuplik murah, mengirim mahal — satu kali kirim = 208 kali pembacaan
+3. Karena itu laju cuplik ≠ laju kirim
+4. Agregasi, deadband, batching, dan pelaporan peristiwa memberi informasi lebih banyak dengan energi lebih sedikit
+5. Deadband dan pelaporan peristiwa wajib disertai heartbeat
+6. Melanggar Nyquist dengan sadar dan tertulis adalah rekayasa; melanggarnya tanpa sadar adalah kelalaian
+
+--- PAGE 46 ---
+Desain & Aplikasi IoT
+BLOK 4
+Sekarang Anda yang mengukur
+Praktikum, pembentukan kelompok, dan penutup
+
+--- PAGE 47 ---
+Desain & Aplikasi IoT
+Praktikum: Ukur Node Anda Sendiri
+Alat: ESP32 + INA219 (atau USB power analyzer) + baterai/catu daya
+Yang diukur — empat angka:
+# Keadaan Cara
+1 Arus tidur (deep sleep) Jalankan deep sleep 60 dtk, catat arus tetapnya
+2 Arus aktif, radio mati CPU bekerja, Wi-Fi belum dinyalakan
+3 Arus saat menyambung Wi-Fi Catat arus dan durasinya — durasi sama pentingnya
+4 Arus saat mengirim Satu paket MQTT / HTTP
+Lalu hitung: arus rata-rata → umur baterai → bandingkan dengan slide 40 pertemuan 2 (8,8 hari)
+ 🔍 Dugaan saya: arus tidur papan Anda akan ratusan kali lebih besar daripada datasheet. Buktikan saya benar atau salah.
+
+--- PAGE 48 ---
+Desain & Aplikasi IoT
+Yang Dilaporkan dari Praktikum
+Wajib ada Catatan
+Empat angka arus + durasi tiap keadaan Dengan satuan dan ketidakpastiannya
+Grafik arus terhadap waktu untuk satu siklus penuh Seperti slide 9 — tapi milik papan Anda
+Perhitungan arus rata-rata & umur baterai Tunjukkan rumusnya
+Perbandingan dengan angka datasheet Berapa selisihnya, dan mengapa
+Satu paragraf: apa yang akan Anda ubah pada rancangan Berdasarkan angka Anda sendiri
+ ⚠️ Laporan yang menyajikan satu angka rata-rata tanpa sebaran tidak mendapat nilai penuh. Ukur minimal sepuluh siklus, laporkan sebarannya.
+
+--- PAGE 49 ---
+Desain & Aplikasi IoT
+Pembentukan Kelompok
+Mulai hari ini: kelompok 3–4 mahasiswa, tetap sampai akhir semester.
+Ketentuan Rincian
+Ukuran 3–4 orang
+Masa berlaku Tetap sampai proyek akhir
+Mulai dipakai Tugas 2 (rilis minggu 4)
+Wajib sejak awal Satu repositori Git dan satu logbook keputusan desain
+Pendaftaran [isi tautan] — tutup akhir minggu ini
+Riwayat commit dan logbook adalah bukti kontribusi paling objektif ketika muncul sengketa pembagian kerja pada proyek akhir nanti. Mulailah dari 
+sekarang, bukan di minggu 12.
+
+--- PAGE 50 ---
+Desain & Aplikasi IoT
+Rangkuman
+Tujuh hal yang dibawa pulang:
+1. Robotika melatih sensor untuk mesin yang ada penjaganya; kita untuk mesin yang ditinggal sendirian
+2. Dari aktif ke deep sleep turun 10.000× — tidak ada tuas desain lain sebesar itu
+3. 96% energi sekali kirim habis untuk menyambung, bukan untuk mengirim
+4. Datasheet bicara tentang chip; Anda mengukur papan — selisihnya bisa ratusan kali
+5. Presisi bukan akurasi. Grafik yang mulus bukan bukti kebenaran
+6. Drift adalah kegagalan yang diam — dan karena itu lebih berbahaya daripada sensor yang mati
+7. Mencuplik murah, mengirim mahal — laju cuplik dan laju kirim adalah dua keputusan
+Angka yang layak diingat: suhu saja menggeser bacaan sensor tangki kita 6,6 cm — tiga kali lipat kebutuhan akurasi yang kita tulis sendiri minggu 
+lalu.
+
+--- PAGE 51 ---
+Desain & Aplikasi IoT
+Bacaan dan Minggu Depan
+Bacaan sebelum pertemuan 4:
+•  Perry Lea Bab 3 — sensor, MEMS, dan sistem daya (pelengkap blok 1 dan 2 hari ini)
+•  Hanes dkk. (Cisco), Bab 4 — protokol lapis akses · mulai dari sini, ini buku utama minggu depan
+•  NPTEL Introduction to IoT — Minggu 3
+Pertemuan 4 — Konektivitas I: Teknologi Jarak Pendek Wi-Fi, BLE, Zigbee, Thread, Matter. Ruang trade-off empat sumbu: jangkauan, 
+laju data, daya, biaya.  🔧 Praktikum: ukur RSSI dan packet delivery ratio pada jarak dan halangan berbeda.
+ 📌 Pengingat tenggat:
+•  Tugas 1 dikumpulkan akhir minggu 4 — sisa satu minggu
+•  Tugas 2 (kelompok) rilis minggu 4 — pastikan kelompok sudah terbentuk
+•  Laporan praktikum hari ini: satu minggu
+
+--- PAGE 52 ---
+Desain & Aplikasi IoT
+Penutup
+Node yang baik bukan node yang bekerja cepat.
+Node yang baik adalah node yang tidur selama mungkin,
+tahu kapan dirinya tidak bisa dipercaya,
+dan tidak pernah mengirim lebih dari yang perlu.
+

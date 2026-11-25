@@ -1,0 +1,47 @@
+# =========================================================================
+# .gitignore - Proyek DESIOT ITS Surabaya
+# =========================================================================
+
+# Python Virtual Environments & Cache
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# Node.js
+node_modules/
+
+# PlatformIO & ESP-IDF Build Artifacts
+.pio/
+desiot_build/
+build/
+*.bin
+*.elf
+*.map
+*.hex
+*.o
+*.a
+*.d
+*.obj
+
+# Redundant duplicate test directory
+firmwarenodes/
+
+# Temporary & Log Files
+*_CLONE.docx
+*.tmp
+*.log
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS System Files
+.DS_Store
+Thumbs.db
+desktop.ini

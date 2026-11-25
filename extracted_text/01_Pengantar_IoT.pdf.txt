@@ -1,0 +1,820 @@
+=== FILE: 01_Pengantar_IoT.pdf (Pages: 56) ===
+
+--- PAGE 1 ---
+Desain & Aplikasi IoT
+Desain & Aplikasi IoT
+IOT : Design and Applications
+Muhtadin, ST. MT.
+
+--- PAGE 2 ---
+Desain & Aplikasi IoT
+• Nama: Desain dan Aplikasi IoT (3 SKS)
+• Bentuk: Kuliah 3 × 50 menit + praktikum 
+terintegrasi
+• Jalur komunikasi: MyITS Classroom, WhatsAp
+2
+Tentang Mata Kuliah Ini
+
+--- PAGE 3 ---
+Desain & Aplikasi IoT 3
+Referensi
+
+--- PAGE 4 ---
+Desain & Aplikasi IoT
+Berapa banyak perangkat terhubung yang ada di ruangan ini sekarang?
+4
+
+--- PAGE 5 ---
+Desain & Aplikasi IoT
+Minggu ke- Materi
+1–3 Fondasi: gambaran, metodologi desain, node & energi
+4–7 Konektivitas dan protokol - dari BLE sampai LoRaWAN, dari REST sampai MQTT
+8 UTS
+9–11 Gateway, cloud, dan data
+12–13 Keamanan, interoperabilitas, skalabilitas
+14–15 Aplikasi domain & proyek akhir
+16 UAS
+5
+Materi Perkuliahan
+
+--- PAGE 6 ---
+Desain & Aplikasi IoT
+Pada akhir semester, anda diharapkan akan mampu :
+• Membaca sebuah sistem IoT dan menjelaskan 
+arsitekturnya
+• Memilih teknologi konektivitas dengan alasan teknis, bukan 
+alasan kebiasaan
+• Membangun alur data lengkap: sensor → gateway → cloud 
+→ dashboard
+• Menemukan lubang keamanan pada sistem IoT dan 
+menutupnya
+• Merancang dan mempertahankan sebuah solusi IoT di 
+depan orang lain
+6
+Tujuan
+
+--- PAGE 7 ---
+Desain & Aplikasi IoT
+Embedded System mengajarkan Anda merancang satu node. 
+Mata kuliah ini mengajarkan Anda merancang sistem yang terdiri dari banyak node.
+7
+Hubungan Embedded Systems & Desain Aplikasi IoT
+Embedded System Desain & Aplikasi IoT
+Satu node: firmware, C, register, RTOS Sistem: node → jaringan → platform → aplikasi
+Driver sensor, timer, interrupt Pemilihan sensor, anggaran energi sistem
+Wi-Fi API Wi-Fi, BLE, Zigbee, LoRaWAN, NB-IoT mendalam
+HTTP client MQTT, CoAP , REST sebagai gaya arsitektur
+— Gateway, cloud, keamanan, skalabilitas
+
+--- PAGE 8 ---
+Desain & Aplikasi IoT
+Pagi Hari : 06.30 — Anda bangun. Sebelum mata terbuka, banyak hal sudah terjadi.
+• Sensor tidur / bantal pintar memantau pola tidur semalam → dikirim ke gateway IoT 
+→ dialirkan ke layanan cloud → tampil di dashboard ponsel
+• Tidak perlu alarm; bila ada penerbangan pagi, jadwal diatur agen cloud lewat aturan 
+IFTTT (if this, then that)
+• Tungku pemanas terhubung ke penyedia cloud yang berbeda, lewat Wi-Fi 802.11 
+rumah, begitu pula alarm asap, bel pintu, pintu garasi, kamera, sistem keamanan
+• Anjing memakai sensor proksimitas, mampu membuka pintu hewan dan melaporkan 
+posisinya
+• Tidak ada PC. Ada tablet, ponsel, dan kacamata VR/AR
+• Di lemari: fog computing gateway tersambung 5G, memproses aliran video webcam 
+untuk mendeteksi jatuh, memindai anomali (suara aneh, bocor air, lampu menyala), 
+terkoneksi dengan ponsel, dan bertindak sebagai private cloud Anda
+8
+Kehidupan Berdampingan dengan Perangkat yang 
+Terhubung
+
+--- PAGE 9 ---
+Desain & Aplikasi IoT
+Dalam Perjalanan :
+• Jersey sepeda dengan sensor tercetak memantau detak jantung dan suhu → 
+dialirkan lewat Bluetooth Low Energy ke ponsel, bersamaan dengan audio Bluetooth 
+ke earphone
+• Papan iklan digital menampilkan video dan iklan real-time
+• Di kedai kopi: papan tanda digital menyapa Anda dengan nama dan menawarkan 
+pesanan terakhir Anda — dikenali oleh beacon dan gateway dalam radius 3 meter
+• Pengendara mobil diarahkan ke slot parkir optimal oleh sensor di tiap petak
+9
+Kehidupan Berdampingan dengan Perangkat yang 
+Terhubung
+
+--- PAGE 10 ---
+Desain & Aplikasi IoT
+Bekerja di Kantor :
+• Program energi hijau; sensor proksimitas mendeteksi bukan hanya apakah ruangan 
+terisi, tapi siapa yang ada di dalamnya
+• Kartu nama pegawai berupa perangkat beacon dengan baterai 10 tahun
+• Lampu, HVAC, tirai otomatis, kipas, papan tanda, semuanya terhubung; fog node 
+pusat memantau seluruh gedung dan menyinkronkan ke cloud
+• Rules engine membuat keputusan waktu nyata berdasarkan okupansi, jam, musim, dan 
+suhu dalam/luar
+• Sensor pada pemutus arus utama "mendengarkan" pola energi dan melapor bila 
+polanya ganjil
+• Semua diproses memakai edge analytics dan model machine learning yang dilatih di 
+cloud lalu didorong ke edge computing
+• Kantor memiliki 5G small cell; 5G internal berfungsi sebagai LAN
+10
+Kehidupan Berdampingan dengan Perangkat yang 
+Terhubung
+
+--- PAGE 11 ---
+Desain & Aplikasi IoT
+Produksi di Pabrik :
+• Masalahnya: kualitas produk menurun. Sambungan cacat, hasil akhir kalah bagus dibanding 
+bulan lalu. Dilihat dengan mata, semuanya tampak normal.
+• Yang tersedia: sensor getaran, suhu, kecepatan, penglihatan mesin, dan beacon pelacak, 
+divisualisasikan waktu nyata. Algoritma perawatan prediktif berjalan. Namun log dan analisis 
+tren tidak menemukan apa pun yang janggal.
+• Yang menyelamatkan: seluruh data lantai pabrik disimpan dalam basis data jangka Panjang, 
+layanan yang dulu saat implementasi dianggap mahal.
+• Hasil penelusuran mundur, ternyata bukan kegagalan satu titik, melainkan tiga hal yang 
+ditemukan:
+1. Suhu ruang kerja naik 2 °C untuk menghemat energi musim panas
+2. Laju perakitan melambat 1,5% karena masalah pasokan
+3. Satu mesin cetak sudah mendekati ambang perawatan prediktif — kombinasi suhu dan 
+kecepatan mendorongnya melewati nilai prediksi kegagalan
+Tindakan: model perawatan prediktif dilatih ulang dengan parameter baru agar kasus ini tertangkap 
+di masa depan.
+11
+Kehidupan Berdampingan dengan Perangkat yang 
+Terhubung
+
+--- PAGE 12 ---
+Desain & Aplikasi IoT
+Apakah IoT itu ?
+• …
+• ….
+• …..
+• ……
+12
+Definisi IoT
+
+--- PAGE 13 ---
+Desain & Aplikasi IoT
+• ITU-T Y.4000/Y.2060:
+ "Infrastruktur global bagi masyarakat informasi, yang memungkinkan layanan tingkat 
+lanjut dengan saling menghubungkan benda (fisik dan virtual) berdasarkan teknologi 
+informasi dan komunikasi yang ada maupun yang sedang berkembang."
+• IEEE (ringkas):
+"Jaringan benda — masing-masing dengan sensor tertanam — yang terhubung ke 
+internet.“
+• Kevin Ashton (1999):
+"Komputer yang mengetahui sendiri segala hal tentang benda, menggunakan data 
+yang mereka kumpulkan tanpa bantuan manusia."
+13
+Definisi IoT
+
+--- PAGE 14 ---
+Desain & Aplikasi IoT
+1999 — Kevin Ashton (Procter & Gamble)
+• Masalahnya sepele: lipstik Oil of Olay warna tertentu 
+selalu kosong di rak toko, padahal ada di gudang
+• Solusinya: tempelkan RFID pada setiap produk agar 
+rantai pasok "tahu sendiri" apa yang adan dan di mana 
+posisinya.
+• Ashton memberi nama presentasinya "Internet of 
+Things" — semata-mata karena internet sedang jadi 
+kata kunci populer di tahun 1999
+14
+Asal dari Istilah IoT
+
+--- PAGE 15 ---
+Desain & Aplikasi IoT
+Sistem IoT adalah : 
+sistem terdistribusi berskala besar yang 
+tersusun dari perangkat berdaya dan bersumber daya terbatas,
+menutup siklus dari penginderaan hingga tindakan, 
+pada skala yang tidak memungkinkan campur tangan manusia per perangkat.
+15
+Definisi IoT
+
+--- PAGE 16 ---
+Desain & Aplikasi IoT
+Karakteristik Implementasi
+1. Dinamis & mampu beradaptasi 
+(dynamic & self-adapting)
+Perangkat menyesuaikan perilaku terhadap konteks: kamera pengawas 
+mengubah resolusi dan laju bingkai saat mendeteksi gerakan
+2. Mengonfigurasi diri (self-configuring) Ribuan perangkat menyiapkan jaringan dan pengaturannya sendiri; mustahil dikonfigurasi manual satu per satu
+3. Protokol komunikasi yang saling 
+beroperasi (interoperable)
+Perangkat dari vendor berbeda harus bisa saling bicara — inilah alasan 
+standar seperti MQTT, CoAP , dan Matter ada
+4. Identitas unik (unique identity) Setiap perangkat punya pengenal unik (IP , URI, ID) — dasar bagi keamanan dan manajemen perangkat
+5. Terintegrasi ke jaringan informasi Perangkat bukan pulau; ia menjadi bagian dari sistem informasi yang lebih besar dan menambah nilai di sana
+16
+Lima Karakteristik IoT
+Sumber: Bahga & Madisetti (Internet of Things, A Hands-on Approach)
+
+--- PAGE 17 ---
+Desain & Aplikasi IoT
+Ciri Konsekuensi teknis
+1. Skala — ribuan hingga jutaan node Pengelolaan harus otomatis; provisioning & OTA jadi wajib
+2. Keterbatasan — daya, memori, CPU, bandwidth Protokol biasa terlalu berat; energi jadi mata uang desain
+3. Siklus tertutup — sensing ⇄ actuation Kesalahan bukan hanya "data salah", tapi "tindakan salah"
+4. Otonomi — beroperasi tanpa pengawasan Harus tahan gagal, tahan putus jaringan, dan aman secara mandiri
+17
+Empat Ciri Khusus IoT dan konsekuensinya
+
+--- PAGE 18 ---
+Desain & Aplikasi IoT
+1. Ponsel pintar Anda
+2. Laptop yang terhubung Wi-Fi kampus
+3. Meteran listrik pintar PLN
+4. Arduino di meja Anda yang tidak terhubung apa pun
+5. Jam tangan pintar yang menghitung langkah
+6. Kamera CCTV kampus yang merekam ke DVR lokal
+7. Sensor kualitas udara ISPU milik pemerintah kota
+18
+Perangkat Mana yang IoT?
+
+--- PAGE 19 ---
+Desain & Aplikasi IoT
+1. Ponsel pintar Anda (Gateway atau antar muka, bukan Node IoT)
+2. Laptop yang terhubung Wi-Fi kampus (Bukan, ada antarmuka, sumber daya besar)
+3. Meteran listrik pintar PLN (Ya)
+4. Arduino di meja Anda yang tidak terhubung apa pun (Bukan)
+5. Jam tangan pintar yang menghitung Langkah (Ya/Tidak, IoT Konsumen/Wearable)
+6. Kamera CCTV kampus yang merekam ke DVR local (Tidak)
+7. Sensor kualitas udara ISPU milik pemerintah kota (Ya)
+19
+Perangkat Mana yang IoT?
+
+--- PAGE 20 ---
+Desain & Aplikasi IoT
+Dari RFID ke AIoT : 
+20
+Sejarah IoT
+Tahun Tonggak Sejarah
+1982 Mesin Coca-Cola di Carnegie Mellon — perangkat pertama yang terhubung jaringan dan melaporkan status isi & suhunya
+1990 Pemanggang roti terhubung internet John Romkey — demo pertama kendali jarak jauh
+1999 Kevin Ashton menciptakan istilah "Internet of Things"
+2000-an Era RFID dan M2M — vertikal, tertutup, berbasis seluler
+2008–09 Jumlah benda terhubung melampaui jumlah manusia (Cisco IBSG)
+2010-an Era IoT — IP , nirkabel, terbuka, cloud; lahirnya MQTT & CoAP di arus utama
+2016 Mirai — serangan DDoS dari ratusan ribu perangkat IoT; keamanan jadi arus utama
+2020-an LPWAN meluas (LoRaWAN, NB-IoT), Matter, edge & TinyML
+Kini AIoT — kecerdasan berpindah ke tepi jaringan
+
+--- PAGE 21 ---
+Desain & Aplikasi IoT
+Gagasannya lahir 1999. Yang berubah bukan gagasannya, melainkan empat harga 
+pendukungnya:
+1. Biaya sensor turun drastis (akselerometer, sensor gas, kamera)
+2. Biaya konektivitas turun — modul Wi-Fi/BLE kini di bawah 2 dolar; LPWAN membuat 
+langganan data hampir nol
+3. Biaya komputasi & penyimpanan turun — MCU 32-bit seharga MCU 8-bit dulu; cloud 
+dibayar sesuai pakai
+4. Energi membaik — kapasitas baterai naik, dan yang lebih penting: daya siaga MCU 
+turun ke orde mikroampere
+21
+Faktor Pendorong IoT
+
+--- PAGE 22 ---
+Desain & Aplikasi IoT
+Global (IoT Analytics, Okt 2025)
+• 18,5 miliar perangkat IoT terhubung (2024) → 21,1 miliar (2025), tumbuh 14%
+• Proyeksi 39 miliar pada 2030 (CAGR 13,2%)
+• Tiga teknologi menguasai ±80% koneksi: Wi-Fi 32% · Bluetooth 24% · Seluler 22%
+Indonesia (ASIOTI)
+• Sekitar 678 juta perangkat IoT beredar (2025), proyeksi menuju 800 juta
+• Nilai pasar sekitar USD 40 miliar, tumbuh ±14,7% per tahun
+22
+Gambaran pasar IoT saat ini
+
+--- PAGE 23 ---
+Desain & Aplikasi IoT
+M2M (2000-an) IoT (2010-an ke atas)
+Arsitektur Vertikal, terkunci per vendor Horizontal, berbagi platform
+Konektivitas Seluler titik-ke-titik, SIM khusus IP , beragam kanal, nirkabel
+Data Terisolasi dalam silo aplikasi Terkumpul, dapat dipadukan lintas domain
+Skala Ratusan–ribuan Jutaan
+Nilai Otomasi satu proses Wawasan lintas sistem
+23
+Dari M2M ke IoT: Apa Bedanya?
+Image credit : TechVidvan
+
+--- PAGE 24 ---
+Desain & Aplikasi IoT
+# Blok Pertanyaan intinya
+1 Penginderaan & aktuasi Besaran apa yang diukur, seberapa sering, seberapa akurat?
+2 Node Berapa daya tersedia, berapa lama harus bertahan?
+3 Konektivitas Seberapa jauh, seberapa banyak data, seberapa hemat?
+4 Gateway & edge Apa yang diolah di dekat sumber, apa yang dikirim?
+5 Platform & data Bagaimana perangkat dikelola dan data disimpan?
+6 Aplikasi & aksi Keputusan apa yang dihasilkan, dan siapa yang bertindak?
+24
+Block Pembangun IoT
+
+--- PAGE 25 ---
+Desain & Aplikasi IoT
+Kelas RAM Flash Kemampuan
+Kelas 0 ≪ 10 KB ≪ 100 KB Tidak mampu berkomunikasi aman secara mandiri; butuh gateway
+Kelas 1 ~10 KB ~100 KB Mampu CoAP/DTLS, tidak mampu HTTP+TLS penuh
+Kelas 2 ~50 KB ~250 KB Mampu tumpukan protokol biasa, masih perlu hemat
+25
+Blok 1–2: Node dan Taksonominya
+Klasifikasi perangkat terbatas — RFC 7228:
+ESP32 berada di atas Kelas 2
+
+--- PAGE 26 ---
+Desain & Aplikasi IoT
+Setiap teknologi menempati satu titik dalam ruang empat sumbu — tidak ada yang unggul 
+di semuanya:
+• Jangkauan: sentimeter (NFC) → puluhan kilometer (LoRa, NB-IoT)
+• Laju data: puluhan bit/detik → ratusan Mbit/detik
+• Konsumsi daya: mikrowatt → watt
+• Biaya per node + biaya langganan
+26
+Blok 3: Konektivitas
+Jangkauan Laju data Daya
+BLE ~10 m Sedang Sangat rendah
+Wi-Fi ~50 m Tinggi Tinggi
+Zigbee/Thread ~100 m (mesh) Rendah Rendah
+LoRaWAN 2–15 km Sangat rendah Sangat rendah
+NB-IoT / LTE-M Seluler Rendah Rendah–sedang
+
+--- PAGE 27 ---
+Desain & Aplikasi IoT
+Mengapa tidak semua node langsung ke cloud? Lima 
+alasan:
+• Bandwidth & biaya : mengirim semua data mentah itu 
+mahal
+• Latensi : keputusan tertentu tidak boleh menunggu bolak-
+balik ke cloud
+• Privasi : sebagian data sebaiknya tidak pernah 
+meninggalkan lokasi
+• Ketahanan luring : sistem harus tetap hidup saat internet 
+mati
+• Terjemahan protokol — node berkomunikasi 
+menggunakan Zigbee/BLE/LoRa, cloud berkomunikasi 
+menggunakan HTTPS
+27
+Blok 4: Gateway dan Edge
+
+--- PAGE 28 ---
+Desain & Aplikasi IoT
+Yang membedakan purwarupa dari produk bukan kemampuan mengirim data, melainkan 
+kemampuan mengelolanya.
+Fungsi platform IoT:
+• Provisioning & identitas — bagaimana 5.000 perangkat mendapat identitas unik yang 
+aman?
+• Device registry & shadow/digital twin — apa status terakhir perangkat yang sedang 
+tidur?
+• Manajemen konfigurasi
+• OTA firmware update — perangkat yang tidak bisa diperbarui adalah kerentanan 
+permanen
+• Ingestion & penyimpanan time-series — retention, downsampling
+• Rule engine, alerting, visualisasi
+28
+Blok 5: Platform dan Data
+
+--- PAGE 29 ---
+Desain & Aplikasi IoT
+Data tidak hanya ditampilkan, namun digunakan untuk aksi, melakukan diagnostic, atau 
+bahkan prediksi
+29
+Blok 6: Aplikasi dan Aksi
+Tingkat Pertanyaan Contoh
+Deskriptif Apa yang terjadi? Suhu ruang 31 °C
+Diagnostik Mengapa terjadi? AC mati sejak pukul 14.00
+Prediktif Apa yang akan terjadi? Kompresor akan gagal dalam ±2 minggu
+Preskriptif Apa yang harus dilakukan? Jadwalkan perawatan Kamis; turunkan beban sementara
+
+--- PAGE 30 ---
+Desain & Aplikasi IoT 30
+Arsitektur IoT – 3 Lapis
+• Paling sederhana
+• Menyembunyikan layer 
+pengolahan data, 
+kemanan, dan aspek 
+bisnis
+• Muncul dari komunitas 
+RFID/M2M
+Image credit : startertutorials.com
+
+--- PAGE 31 ---
+Desain & Aplikasi IoT 31
+Arsitektur IoT – 5 Lapis
+• Paling sederhana
+• Menyembunyikan layer 
+pengolahan data, 
+kemanan, dan aspek 
+bisnis
+• Muncul dari komunitas 
+RFID/M2M
+Image credit : startertutorials.com
+
+--- PAGE 32 ---
+Desain & Aplikasi IoT 32
+Arsitektur IoT – 6 Blok Fungsional
+Device
+• Identifikasi, penginderaan, aktuasi, 
+pemantauan
+Communication
+• Protokol dan model komunikasi antar-
+komponen
+Services
+• Layanan: pemodelan perangkat, 
+kendali, publikasi, penemuan, analitik
+Management
+• Tata kelola sistem: konfigurasi, 
+pemantauan, kebijakan
+Security
+• Autentikasi, otorisasi, integritas, privasi
+Application
+• Antarmuka bagi pengguna untuk 
+memantau dan mengendalikan
+Image credit : Bahga & Madisetti
+
+--- PAGE 33 ---
+Desain & Aplikasi IoT
+Arsitektur Referensi Asal Kekuatan
+3 lapis RFID/M2M Paling sederhana Menjelaskan IoT ke orang awam
+5 lapis Akademik umum Seimbang; mencakup data & bisnis Acuan default kelas ini
+Blok fungsional Bahga & Madisetti
+Menonjolkan Management 
+& Security sebagai lintas-
+lapis
+Merancang komponen 
+perangkat lunak sistem
+33
+Arsitektur IoT - Perbandingan
+
+--- PAGE 34 ---
+Desain & Aplikasi IoT
+Pada Protokol IoT,
+1. Apakah pengirim harus mengenal penerimanya? 
+2. Apakah keduanya harus hidup pada saat yang sama? 
+3. Siapa yang memulai percakapan?
+Gaya arsitektur menentukan protokol — bukan sebaliknya.
+34
+Model Komunikasi pada IoT
+
+--- PAGE 35 ---
+Desain & Aplikasi IoT
+• Client mengirim permintaan ke server; 
+server menjawab
+• Saat menerima permintaan, server 
+memutuskan cara merespons, mengambil 
+data, menyiapkan representasi sumber 
+daya, lalu mengirim jawaban
+• Bersifat stateless: tiap permintaan berdiri 
+sendiri, tidak bergantung pada permintaan 
+sebelumnya
+35
+Model Komunikasi pada IoT : Request–Response
+Cocok untuk: query sesuai permintaan, konfigurasi, pengambilan data historis 
+Protokol: HTTP, CoAP (Constrained Application Protocol)
+Kalau sensor Anda tidur 99% dari total waktu, siapa yang mengirim permintaan kepada siapa?
+Image credit : Bahga & Madisetti
+
+--- PAGE 36 ---
+Desain & Aplikasi IoT
+• Representational State Transfer
+• Fokus pada sumber daya dan bagaimana 
+status sumber daya dialamati dan 
+dipindahkan
+• Mengikuti model request-response
+• Klien HTTP → perintah 
+GET/PUT/POST/DELETE →server, 
+dengan payload JSON/XML; sumber daya 
+dialamati lewat URI (Uniform Resource 
+Identifier)
+36
+Request–Response : REST-based API
+Image credit : Bahga & Madisetti
+
+--- PAGE 37 ---
+Desain & Aplikasi IoT
+• Publisher adalah sumber data. 
+➢ Mengirim data ke topik yang dikelola 
+broker. Publisher tidak mengetahui siapa 
+consumer-nya.
+• Consumer berlangganan (subscribe) pada 
+topik yang dikelola broker
+• Ketika broker menerima data untuk 
+sebuah topik, ia meneruskannya ke 
+semua consumer yang berlangganan
+37
+Model Komunikasi pada IoT : Publish–Subscribe
+Cocok untuk: telemetri periodik, notifikasi, satu-ke-banyak, node hemat daya 
+Protokol: MQTT (Message Queuing Telemetry Transport), AMQP (Advanced Message 
+Queuing Protocol), DDS (Data Distribution Service)
+kalau
+ 
+ingin
+ 
+menambah
+ 
+Consumer
+-
+4, 
+berapa
+ 
+baris 
+kode
+ 
+di node yang 
+harus
+ 
+saya
+ 
+ubah
+?
+Image credit : Bahga & Madisetti
+
+--- PAGE 38 ---
+Desain & Aplikasi IoT
+• Publisher mendorong (push) data ke antrean 
+(queue); Consumer menarik (pull) data dari 
+antrean
+• Publisher tidak perlu mengetahui Consumer-
+nya
+• Antrean melepaskan keterikatan antara 
+Publisher dan Consumer
+• Antrean juga berfungsi sebagai penyangga 
+(buffer) — berguna saat laju Publisher dan laju 
+Consumer tidak sepadan
+38
+Model Komunikasi pada IoT : Push–Pull
+Cocok untuk: lonjakan data, pemrosesan batch, konsumen yang lebih lambat daripada 
+Publisher 
+Protokol: AMQP (Advanced Message Queuing Protocol), Kafka
+Image credit : Bahga & Madisetti
+
+--- PAGE 39 ---
+Desain & Aplikasi IoT
+• Model dua arah, full-duplex, memakai 
+koneksi persisten antara klien dan server
+• Setelah koneksi terbentuk, ia tetap 
+terbuka sampai klien meminta 
+menutupnya
+• Setelah terhubung, klien dan server dapat 
+saling mengirim pesan kapan saja
+• Bersifat stateful : server menyadari 
+semua koneksi yang terbuka
+39
+Model Komunikasi pada IoT : Exclusive Pair
+Cocok untuk: kendali waktu nyata, aliran dua arah, dashboard langsung 
+Protokol: WebSocket
+Image credit : Bahga & Madisetti
+Jika server harus mengingat 10.000 koneksi terbuka sekaligus, apa yang terjadi pada memorinya? 
+Dan apa yang terjadi pada baterai node yang harus menjaga koneksi tetap hidup?
+
+--- PAGE 40 ---
+Desain & Aplikasi IoT
+• Komunikasi dua arah full-duplex antara 
+klien dan server
+• Mengikuti model exclusive pair
+40
+Exclusive Pair : Web Socket
+Image credit : Bahga & Madisetti
+
+--- PAGE 41 ---
+Desain & Aplikasi IoT
+Model Perantara Keterikatan ruang Keterikatan waktu Gaya arsitektur
+Request–Response — Ketat Ketat REST
+Publish–Subscribe Broker Lepas Lepas MOM
+Push–Pull Antrean Lepas Lepas MOM
+Exclusive Pair — Ketat Ketat Di antara keduanya
+41
+Perbandingan Model Komunikasi pada IoT
+MOM : Message-Oriented Middleware
+Ruang yang dimaksud adalah : Pengirim tidak tahu, dan tidak perlu tahu siapa penerimanya
+
+--- PAGE 42 ---
+Desain & Aplikasi IoT
+Komponen Peran
+Device Perangkat IoT: penginderaan jarak jauh, aktuasi, pemantauan
+Resource
+Komponen perangkat lunak pada perangkat untuk mengakses, memproses, dan menyimpan 
+informasi sensor, atau mengendalikan aktuator. Termasuk komponen yang memungkinkan akses 
+jaringan bagi perangkat
+Controller Service
+Layanan native yang berjalan di perangkat dan berinteraksi dengan web service. Ia mengirim 
+data dari perangkat ke web service dan menerima perintah dari aplikasi untuk mengendalikan 
+perangkat
+Database Menyimpan data yang dihasilkan perangkat, bisa local (on-premise), bisa di cloud
+Web Service Penghubung antara perangkat, aplikasi, basis data, dan komponen analisis. Diimplementasikan dengan HTTP + prinsip REST, atau dengan protokol WebSocket
+Analysis 
+Component
+Menganalisis data IoT dan menghasilkan keluaran dalam bentuk yang mudah dipahami 
+pengguna
+Application Antarmuka bagi pengguna untuk mengendalikan dan memantau berbagai aspek sistem, serta melihat status dan data terolah
+42
+Komponen Penyusun Sistem IoT
+
+--- PAGE 43 ---
+Desain & Aplikasi IoT
+Fungsi dan Tujuan Klasifikasi IoT Level
+• Menentukan Kompleksitas: Memandu pengembang dalam memilih arsitektur yang tepat, 
+mulai dari sistem sederhana satu perangkat hingga jaringan banyak node skala besar.
+• Efisiensi Biaya dan Sumber Daya: Membantu menyeimbangkan kebutuhan komputasi 
+lokal (edge) versus penyimpanan awan (cloud) agar sesuai anggaran.
+• Optimalisasi Pemrosesan Data: Menentukan di mana data harus dianalisis (secara lokal 
+di perangkat atau jarak jauh di server cloud) untuk mengurangi latensi.
+43
+Tingkatan Sistem pada IoT (IoT Level)
+
+--- PAGE 44 ---
+Desain & Aplikasi IoT
+• Semuanya Lokal
+• Satu node yang melakukan penginderaan/aktuasi, 
+menyimpan data, melakukan analisis, dan 
+menjalankan aplikasi - seluruhnya lokal
+• Cocok untuk solusi berbiaya dan berkerumitan 
+rendah, data tidak besar, kebutuhan analisis tidak 
+intensif secara komputasi
+44
+IoT Level-1
+Image credit : Bahga & Madisetti
+
+--- PAGE 45 ---
+Desain & Aplikasi IoT
+• Analisis lokal, data di cloud
+• Satu node melakukan penginderaan/aktuasi dan 
+analisis lokal
+• Data disimpan di cloud; aplikasi biasanya berbasis 
+cloud
+• Cocok ketika data besar, tetapi kebutuhan analisis 
+utama masih ringan dan bisa dikerjakan lokal
+45
+IoT Level-2
+Image credit : Bahga & Madisetti
+
+--- PAGE 46 ---
+Desain & Aplikasi IoT
+• Semua ke cloud
+• Satu node; data disimpan dan dianalisis di cloud; 
+aplikasi berbasis cloud
+• Cocok ketika data besar dan kebutuhan analisis 
+intensif secara komputasi
+46
+IoT Level-3
+Image credit : Bahga & Madisetti
+
+--- PAGE 47 ---
+Desain & Aplikasi IoT
+• Banyak node, ditambah observer node
+• Banyak node yang melakukan analisis lokal, 
+data di cloud, aplikasi berbasis cloud
+• Memiliki observer node lokal maupun di cloud 
+yang dapat berlangganan dan menerima 
+informasi yang terkumpul di cloud
+• Cocok ketika banyak node dibutuhkan, data 
+besar, dan analisis intensif
+47
+IoT Level-4
+Image credit : Bahga & Madisetti
+
+--- PAGE 48 ---
+Desain & Aplikasi IoT
+• Banyak end node + satu coordinator
+• Banyak end node yang melakukan 
+penginderaan/aktuasi, ditambah satu coordinator 
+node
+• Coordinator mengumpulkan data dari end node 
+dan mengirimkannya ke cloud
+• Data disimpan dan dianalisis di cloud; aplikasi 
+berbasis cloud
+• Cocok untuk solusi berbasis jaringan sensor 
+nirkabel (WSN), data besar, analisis intensif
+48
+IoT Level-5
+Image credit : Bahga & Madisetti
+
+--- PAGE 49 ---
+Desain & Aplikasi IoT
+• Banyak node independen + centralized 
+controller
+• Banyak end node independen yang 
+melakukan penginderaan/aktuasi dan 
+mengirim data langsung ke cloud
+• Komponen analitik menganalisis data dan 
+menyimpan hasilnya di basis data cloud
+• Terdapat centralized controller yang 
+mengetahui status seluruh end node dan 
+mengirimkan perintah kendali kepada mereka
+49
+IoT Level-6
+Image credit : Bahga & Madisetti
+Kelas node
+
+--- PAGE 50 ---
+Desain & Aplikasi IoT
+Untuk menentukan tingkat sistem Anda, jawab berurutan:
+1. Berapa banyak node? 
+2. Seberapa besar datanya? 
+3. Seberapa berat analisisnya? 
+4. Bisakah tiap node bicara langsung ke internet? 
+• Satu → Level 1–3, Banyak → Level 4–6
+• Kecil → Level 1, Besar → Level 2 ke atas
+• Ringan & bisa lokal → Level 1–2, Berat → Level 3 ke atas
+• Tidak (terlalu hemat daya / terlalu lemah) → Level 5, Ya → Level 6
+50
+Pemilihan Tingkatan IoT
+
+--- PAGE 51 ---
+Desain & Aplikasi IoT
+Contoh Tingkat
+Stasiun cuaca rumahan dengan layar sendiri 1
+Pemantau kualitas udara satu titik dengan riwayat di cloud 2–3
+Pemantau okupansi beberapa ruang kuliah + dashboard + 
+alert 4
+Sensor kelembapan tanah LoRa di kebun, menggunakan 
+satu gateway 5
+Meteran listrik per lantai, tiap unit ber-Wi-Fi, dengan 
+kendali terpusat 6
+51
+Pemilihan Tingkatan IoT
+
+--- PAGE 52 ---
+Desain & Aplikasi IoT
+Sektor Ciri khas & kendalanya Contoh penggunaan
+Industri & 
+manufaktur
+IIoT; dunia OT (uptime, keselamatan) bertemu IT (keamanan, 
+layanan); latensi kritis; banyak brownfield — mesin 30 tahun 
+(RS485)
+Perawatan preventif, kenaikan throughput, penghematan energi, sistem 
+keselamatan (termal, tekanan, kebocoran gas)
+Konsumen Segmen pertama yang mengadopsi; kendala utama: standar terbelah (Bluetooth, Zigbee, Z-Wave saling tak kompatibel) Rumah pintar (irigasi, kunci, lampu, termostat), wearable, pelacak hewan
+Ritel, keuangan, 
+pemasaran
+Diukur dari transaksi finansial langsung; bila tak memberi respons 
+itu, investasinya dipertanyakan
+Iklan tertarget, beaconing, pelacakan aset, pemantauan rantai dingin, papan 
+tanda digital, asuransi berbasis risiko
+Kesehatan Kepatuhan HIPAA; harus setara alat medis; zero downtime bila memantau pasien di rumah Perawatan di rumah, model prediktif, pemantauan demensia & lansia, pelacakan alat rumah sakit, indikator pasien jatuh
+Transportasi & 
+logistik
+Perlu kesadaran geolokasi; kendaraan baru rata-rata punya ±100 
+sensor, akan berlipat dengan V2V dan V2R
+Pelacakan armada, identifikasi gerbong, pelacakan paket, perawatan 
+preventif kendaraan
+Pertanian & 
+lingkungan
+Daerah terpencil, populasi jarang → berdampak langsung pada 
+pilihan komunikasi (WPAN non-IP , WAN jarak jauh)
+Irigasi & pemupukan pintar, pencahayaan pintar unggas, kesehatan ternak, 
+survei lahan dengan drone, pemantauan sesar & gunung api
+Energi Fasilitas di lingkungan terpencil atau berbahaya (gurun, lereng, reaktor); butuh respons waktu nyata Analisis anjungan minyak, pemantauan panel surya jarak jauh, meteran listrik kota, penyetelan bilah turbin angin
+Kota cerdas Jumlah sensor sangat besar — Barcelona ±1 juta sensor lingkungan; New York >3.000 kamera per pemasangan Kendali polusi, prakiraan mikroklimat, manajemen sampah sesuai kapasitas, lampu lalu lintas pintar, parkir pintar, pemantauan keausan jembatan
+Pemerintah & 
+militer Peran khas: standardisasi, alokasi spektrum frekuensi, regulasi Pelacakan aset pemerintah, sensor swarm lewat drone, pemantauan tinggi muka air untuk bendungan dan banjir
+52
+Contoh Penggunaan IoT
+Sumber: Perry Lea
+
+--- PAGE 53 ---
+Desain & Aplikasi IoT
+Domain Relevansi Indonesia
+Pertanian & akuakultur Sangat besar — sektor utama, lahan luas, sinyal terbatas → LPWAN
+Kota cerdas Peringatan dini banjir sangat relevan
+Logistik & rantai dingin Negara kepulauan → rantai dingin krusial
+Industri (IIoT) Making Indonesia 4.0
+Gedung & energi Efisiensi energi kampus dan perkantoran
+Kesehatan Jangkauan layanan daerah terpencil
+53
+Peluang di Indonesia
+
+--- PAGE 54 ---
+Desain & Aplikasi IoT
+• Berpasangan, 10 menit. Pilih satu produk IoT yang Anda kenal.
+• Jawab enam hal:
+1. Petakan ke model 5 lapis — apa yang ada di tiap lapis?
+2. Tebak teknologi konektivitasnya, dan berikan alasannya
+3. Bagaimana ia diberi daya? Berapa lama bertahan?
+4. Siklusnya tertutup atau tidak? Adakah aktuator, atau hanya pemantauan?
+5. Model komunikasinya: request–response, publish–subscribe, push–pull, atau 
+exclusive pair? Apa petunjuknya?
+6. Tingkat berapa? Level 1–6 menurut Bahga & Madisetti, Berikan alasannya?
+Tulis nama dan NRP !
+54
+Tugas Diskusi
+
+--- PAGE 55 ---
+Desain & Aplikasi IoT
+• IoT bukan "benda + internet", melainkan siklus tertutup pada skala tanpa campur 
+tangan manusia
+• Yang berubah sejak 1999 bukan gagasannya, melainkan harganya
+• Sistem IoT punya enam blok bangunan, kita akan membahasnya lebih detail satu per 
+satu
+• Arsitektur referensi adalah kosakata bersama, bukan cetak biru
+• Ada empat model komunikasi, yang jatuh ke dalam dua gaya arsitektur: MOM dan 
+REST
+• Gaya arsitektur menentukan protokol, bukan sebaliknya
+Referensi yang perlu anda pahami :
+• Bahga & Madisetti — Bab 1 lengkap dan Bab 5 (metodologi desain)
+• Perry Lea — Bab 1 "The IoT Story" dan awal Bab 2
+• NPTEL Introduction to IoT (Prof. Sudip Misra) — Minggu 1
+55
+Rangkuman
+
+--- PAGE 56 ---
+Desain & Aplikasi IoT
+TERIMA KASIH
+56
+

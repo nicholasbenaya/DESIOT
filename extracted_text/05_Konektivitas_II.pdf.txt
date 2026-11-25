@@ -1,0 +1,521 @@
+=== FILE: 05_Konektivitas_II.pdf (Pages: 47) ===
+
+--- PAGE 1 ---
+Desain dan Aplikasi IoT 
+Desain dan Aplikasi IoT   Konektivitas II
+Konektivitas II: LPWAN dan Seluler
+Desain dan Aplikasi IoT  
+Teknik Sistem Komputer ITS
+
+--- PAGE 2 ---
+Desain dan Aplikasi IoT 
+Enam blok Pembangun IoT
+● Enam blok bangunan: penginderaan → node → konektivitas → gateway → platform → aplikasi
+● Pertemuan Sebelumnya: jarak pendek — Wi-Fi, Bluetooth, Zigbee
+● Pertemuan (hari ini): jarak jauh — LoRa, Sigfox, NB-IoT
+Kita masih di blok 3. Yang berubah bukan lapisnya — melainkan jaraknya.
+
+--- PAGE 3 ---
+Desain dan Aplikasi IoT 
+Contoh Kasus : Kebun Kampus
+15 titik sensor kelembapan tanah · tersebar 200 m · pos satpam 300 m 
+dari titik terjauh · tidak ada listrik di kebun · laporan 1× per jam · harus 
+bertahan ≥ 1 tahun
+Kandidat minggu lalu Mengapa Kurang Cocok?
+Wi-Fi Tidak ada access point. Memasangnya berarti menarik listrik ke kebun
+Bluetooth (BLE) Jangkauan ±30 m. Tidak punya mekanisme mengoper pesan
+Zigbee Mesh butuh router berlistrik yang tersebar. Di kebun tidak adayang bisa dihubungkan dengan listrik
+Ketiganya gugur pada hal yang sama:
+semuanya mengandaikan ada infrastruktur berlistrik di 
+dekat sensor.
+Yang kita perlukan adalah teknologi yang bisa menjangkau radius 
+kilometer dari satu titik, tanpa menaruh apa pun di antaranya. Itu definisi
+masalahnya, itulah definisi LPWAN.
+
+--- PAGE 4 ---
+Desain dan Aplikasi IoT 
+LPWAN
+LPWAN — Low-Power Wide-Area Network: kategori radio yang mengorbankan
+kecepatan dan latensi demi jangkauan dan umur baterai.
+Jarak pendek (minggu lalu) LPWAN (hari ini)
+Jangkauan satu hop 10–100 m 2–15 km
+Data rate 250 kbit/dtk – 150 Mbit/dtk 0,3–50 kbit/dtk
+Ukuran pesan khas ratusan byte – megabyte 12–50 byte
+Frekuensi kirim kapan saja beberapa kali per jam
+Umur baterai bulan–tahun tahun
+Infrastruktur per km² banyak access point / router satu gateway
+LPWAN bukan "versi hemat" dari Wi-Fi.
+Mengorbankan kecepatan, untuk memperoleh keuntungan 
+jarak.
+Dan perhatikan baris terakhir — di situlah seluruh daya tariknya untuk kebun 
+kita: satu gateway menutupi seluruh kebun, bahkan seluruh kampus.
+
+--- PAGE 5 ---
+Desain dan Aplikasi IoT 
+SINYAL LEMAH DALAM NOISE
+Bagaimana sinyal yang lebih lemah daripada noise bisa tetap terbaca
+
+--- PAGE 6 ---
+Desain dan Aplikasi IoT 
+Tinjau Ulang Theorema Shannon
+LoRa bekerja pada SNR −20 dB.
+SNR (signal-to-noise ratio) −20 dB artinya: daya sinyal hanya 1/100 
+daya noise.
+SNR Artinya
++20 dB sinyal 100× lebih kuat daripada noise — Wi-Fi cepat
+0 dB sinyal sama besar dengan noise
+−20 dB sinyal 1/100 noise — LoRa SF12
+Bukan sekadar "sinyal lemah". Ini sinyal yang, kalau Anda lihat di 
+osiloskop, tidak terlihat sama sekali, tenggelam sempurna di dalam
+noise.
+Lalu bagaimana penerima bisa membacanya?
+
+--- PAGE 7 ---
+Desain dan Aplikasi IoT 
+Jawabannya: Processing Gain
+Processing gain — keuntungan yang didapat dengan menyebar satu bit informasi ke banyak simbol, lalu menjumlahkannya kembali di penerima.
+Mengapa menjumlahkan menolong: noise itu acak, sinyal itu tahu polanya.
+Yang dijumlahkan Tumbuh sebanding
+Sinyal (polanya sama tiap kali) N — bertambah lurus
+Noise (acak, kadang +, kadang −) √N — sebagian saling meniadakan
+Jumlahkan N kali → SNR membaik N / √N = √N
+Dalam dB: 10 log₁₀(N)
+Contoh: sebar satu bit ke 4096 simbol (inilah SF12):
+processing gain = 10log₁₀(4096) = 36  dB
+Sinyal yang masuk pada −20 dB keluar dari proses itu pada +16 dB — jauh di atas ambang yang dibutuhkan untuk membaca bit.
+Analogi untuk kelas: di ruangan yang sangat ribut, Anda tidak bisa menangkap satu kata yang dibisikkan. Tetapi kalau kata itu diulang 4096 kali dan Anda 
+merekam lalu merata-ratakan seluruh rekamannya, kata itu muncul — sementara keributannya saling menghapus. Anda tidak membuat suaranya lebih keras. 
+Anda mendengarkan lebih lama.
+
+--- PAGE 8 ---
+Desain dan Aplikasi IoT 
+Jawabannya: Processing Gain  (lanjutan)
+
+--- PAGE 9 ---
+Desain dan Aplikasi IoT 
+Chirp: Cara LoRa Melakukannya
+INTI  ·  3 mnt  ·  9
+LoRa tidak mengulang bit secara polos. Ia memakai chirp — sinyal yang frekuensinya menyapu naik (atau turun) secara mulus sepanjang satu simbol.
+Sifat chirp Mengapa berguna
+Energi tersebar di seluruh bandwidth Gangguan sempit hanya merusak sebagian kecil
+Penerima tahu bentuk sapuannya Bisa "memampatkan" kembali seluruh energi menjadi satu puncak tajam
+Informasi ada pada titik awal sapuan Satu simbol membawa SF bit sekaligus
+Tahan pergeseran frekuensi Osilator murah dan efek Doppler tidak mematikannya
+Mengapa ini penting untuk Anda sebagai perancang: chirp membuat LoRa tahan banting terhadap osilator murah. Itulah sebabnya modul LoRa bisa dijual dengan 
+harga puluhan ribu rupiah — bukan karena radionya sederhana, melainkan karena modulasinya memaafkan komponen yang tidak presisi.
+CSS = Chirp Spread Spectrum. Nama itu akan Anda lihat di datasheet. Matematikanya tidak perlu kita buka hari ini.
+
+--- PAGE 10 ---
+Desain dan Aplikasi IoT 
+LoRa Chirp Spectrum Illustration
+11
+
+--- PAGE 11 ---
+Desain dan Aplikasi IoT 
+Spreading Factor: Shannon yang Bisa Anda Sentuh
+Spreading factor (SF) — satu angka, 7 sampai 12, yang menentukan ke berapa banyak simbol satu bit disebar. Naik satu tingkat 
+= jumlah simbol dua kali lipat.
+SF Simbol per bit Data rate Sensitivitas Link budget @ +14 dBm
+7 128 5.469 bit/dtk −123 dBm 137 dB
+8 256 3.125 bit/dtk −126 dBm 140 dB
+9 512 1.758 bit/dtk −129 dBm 143 dB
+10 1.024 977 bit/dtk −132 dBm 146 dB
+11 2.048 537 bit/dtk −134,5 dBm 148,5 dB
+12 4.096 293 bit/dtk −136 dBm 150 dB
+Satu tingkat SF = +2,5 dB sensitivitas = jangkauan +33%
+— dan data rate setengahnya.
+Bandingkan dengan minggu lalu: Wi-Fi link budget 90 dB · BLE Coded PHY 103 dB · LoRa SF12 150 dB. Itu 47 dB lebih 
+besar daripada BLE — setara jarak 224×.
+Angka sensitivitas di atas dari datasheet SX1276 (BW 125 kHz). Rumus di slide 11 pertemuan 4 memberi hasil yang sama dalam 
+±1 dB — jadi tabel ini bukan hafalan, melainkan turunan.
+
+--- PAGE 12 ---
+Desain dan Aplikasi IoT 
+Spreading Factor: Shannon yang Bisa Anda Sentuh  (lanjutan)
+
+--- PAGE 13 ---
+Desain dan Aplikasi IoT 
+Mengapa Sub-GHz, Bukan 2,4 GHz
+LoRa di Indonesia memakai 920–923 MHz, bukan 2,4 GHz seperti Wi-Fi dan Zigbee. Tiga alasan:
+Alasan Angkanya
+Path loss lebih kecil 923 MHz vs 2,4 GHz = 8,3 dB lebih baik → jarak 2,6× (hitungan minggu lalu)
+Tembus penghalang lebih baik Gelombang lebih panjang → lebih lentur mengitari bangunan dan vegetasi
+Pitanya jauh lebih sepi 2,4 GHz berisi Wi-Fi, Bluetooth, Zigbee, oven mikro. 920 MHz relatif lengang
+Harganya — dan ini nyata: (1) Pitanya sempit: Indonesia hanya 3 MHz (920–923), dibanding 83 MHz di 2,4 GHz. Itu salah satu alasan data rate 
+LPWAN kecil. (2) Antenanya lebih besar: seperempat panjang gelombang di 923 MHz = 8,1 cm, dibanding 3,1 cm di 2,4 GHz. (3) Pita sub-GHz berbeda 
+tiap negara — modul 868 MHz Eropa tidak sah dipakai di sini.
+
+--- PAGE 14 ---
+Desain dan Aplikasi IoT 
+Harga SF: Airtime dan Energi
+Satu pesan 50 byte, kelas A (uplink + 2 jendela terima), arus pancar 45 mA:
+SF Airtime Energi per laporan Dibanding SF7
+7 0,098 dtk 1,6 µAh 1×
+9 0,329 dtk 4,1 µAh 2,5×
+10 0,616 dtk 8,7 µAh 5,4×
+12 2,302 dtk 30,8 µAh 19×
+Sekarang bandingkan dengan minggu lalu — dan bersiaplah terkejut:
+Teknologi Energi per laporan
+Wi-Fi 100 µAh
+LoRa SF12 30,8 µAh
+LoRa SF7 1,6 µAh
+Zigbee 0,083 µAh
+BLE advertising 0,008 µAh
+LoRa tidak hemat. LoRa jauh.
+Per laporan, LoRa SF12 memakan 371× energi Zigbee.
+Lalu mengapa node LoRa bisa bertahan bertahun-tahun? Bukan karena radionya murah — melainkan karena ia jarang mengirim. Sekali per jam, bukan sekali 
+per 15 menit. Yang hemat adalah rancangannya, bukan radionya.
+
+--- PAGE 15 ---
+Desain dan Aplikasi IoT 
+Harga SF: Airtime dan Energi  (lanjutan)
+
+--- PAGE 16 ---
+Desain dan Aplikasi IoT 
+Latihan Kilat 1: Link Budget dan Jangkauan
+Empat menit. Berpasangan. Pakai aturan minggu lalu.
+Node LoRa di kebun: transmit power +14 dBm, SF10, sensitivitas gateway −132 dBm. Antena node +2 dBi, antena gateway +5 
+dBi. Fade margin yang Anda sisakan: 15 dB.
+1.  Berapa link budget mentahnya?
+2.  Berapa yang boleh digunakan untuk path loss setelah gain antena dan fade margin?
+3.  Pada 923 MHz, path loss 100 m = 71,7 dB. Dengan path-loss exponent n = 3,5 (pinggiran kota), berapa jarak
+maksimumnya? Petunjuk: d = 100 m * 10^{(L – 71,7)/(10n)}
+4.  Kebun kita 300 m. Terpenuhi atau tidak? Berapa margin sisanya?
+5.  Kalau ternyata gagal, sebutkan cara-cara menambah dB, urutkan dari yang termurah.
+
+--- PAGE 17 ---
+Desain dan Aplikasi IoT 
+Angka Datasheet vs Angka Lapangan
+Datasheet LoRa selalu menyebut "jangkauan sampai 15 km". Mari kita periksa.
+Link budget SF12 @ +14 dBm = 150 dB. Acuan: path loss 100 m @ 923 MHz = 71,7 dB.
+Path-loss exponent n Lingkungan Jarak hitungan
+2,0 ruang bebas — balon udara, atas laut 818 km
+2,7 pedesaan terbuka, antena sangat tinggi 79 km
+3,5 pinggiran kota 17 km
+4,0 perkotaan padat 9,0 km
+Angka yang sama. Rumus yang sama. Selisih 100 kali lipat.
+Yang membedakan hanya satu asumsi: n.
+Jadi "15 km" itu bohong? Tidak, nilainya benar pada n ≈ 3,55, yaitu lapangan terbuka dengan gateway di menara tinggi. Yang menyesatkan
+bukan angkanya, melainkan syarat yang tidak ditulis.
+Dan rekor dunia LoRa memang ratusan kilometer — dari balon cuaca, pada n ≈ 2. Konsisten dengan baris pertama tabel. Fisikanya benar; 
+yang tidak Anda miliki adalah balonnya.
+ketika Anda membaca angka jangkauan, pertanyaan pertama Anda bukan "berapa?" melainkan "pada asumsi apa?"
+
+--- PAGE 18 ---
+Desain dan Aplikasi IoT 
+Angka Datasheet vs Angka Lapangan  (lanjutan)
+
+--- PAGE 19 ---
+Desain dan Aplikasi IoT 
+DARI RADIO MENJADI JARINGAN
+BLOK 2
+Satu radio hanya memancar. Yang membuatnya berguna adalah apa yang ada di belakangnya
+
+--- PAGE 20 ---
+Desain dan Aplikasi IoT 
+LoRa ≠ LoRaWAN
+Perbedaan LoRA dan LoRaWAN
+LoRa LoRaWAN
+Apa itu modulasi radio — cara menaruh bit pada gelombang protokol jaringan di atasnya
+Dibuat oleh Semtech (kepemilikan tertutup) LoRa Alliance (spesifikasi terbuka)
+Mengurus chirp, spreading factor, sensitivitas alamat, keamanan, siapa bicara kapan, ke server mana
+Bisa dipakai sendiri? Ya — dua modul bicara langsung perlu gateway dan server
+LoRa dapat digunakan tanpa LoRaWAN. Dua modul SX1276 bisa bicara langsung, peer-to-peer, tanpa gateway sama sekali. 
+Untuk dua titik yang tetap, misalnya pintu gudang ke kantor 3 km, justru pilihan paling sederhana dan paling murah.
+Pakai LoRa saja bila: sedikit node, letaknya tetap, Anda pemilik kedua ujungnya.
+Pakai LoRaWAN bila: banyak node, perlu keamanan baku, perlu masuk ke internet.
+
+--- PAGE 21 ---
+Desain dan Aplikasi IoT 
+LoRa ≠ LoRaWAN  (lanjutan)
+
+--- PAGE 22 ---
+Desain dan Aplikasi IoT 
+Arsitektur LoRaWAN
+Lapis Siapa Tugasnya
+Node sensor berbaterai memancar — tanpa memilih gateway
+Gateway 1 per kampus/kota mendengar semua SF sekaligus, teruskan apa pun yang terdengar
+Network server perangkat lunak buang salinan ganda, atur SF (ADR), urus keamanan jaringan
+Application server milik Anda buka data, simpan, tampilkan
+Node tidak tahu gateway mana yang mendengarnya. 
+Hanya memancar ke udara, dan siapa pun yang mendengar, 
+meneruskan.
+Akibat yang menentukan rancangan:
+● Menambah gateway = menambah cakupan, tanpa mengubah node
+● Satu pesan terdengar 3 gateway → server memilih yang terbaik → keandalan naik 
+gratis
+● Node tidak pernah melakukan handover, tidak pernah "pindah sel"
+Keamanannya dua lapis: satu kunci untuk jaringan, satu kunci untuk aplikasi — sehingga operator jaringan tidak bisa membaca
+data Anda.
+
+--- PAGE 23 ---
+Desain dan Aplikasi IoT 
+Arsitektur LoRaWAN dalam Satu Gambar  (lanjutan)
+
+--- PAGE 24 ---
+Desain dan Aplikasi IoT 
+Mengapa LoRaWAN Hemat: Tidak Ada Asosiasi
+Ingat temuan pertemuan 3 yang kita ulang terus: 96% energi Wi-Fi habis untuk menyambung.
+Teknologi Langkah sebelum boleh mengirim Lama khas
+Wi-Fi scan → autentikasi → asosiasi → WPA2 → DHCP → ARP → TCP → TLS → MQTT 1–4 dtk
+Zigbee bergabung sekali saat pemasangan, lalu tetap anggota 10 ms per kirim
+LoRaWAN kelas A *tidak ada* — bangun, pancar, buka 2 jendela pendek, tidur 0,1–2,3 dtk (airtime murni)
+Seluruh 2,3 detik LoRa SF12 itu adalah data yang dikirim.
+Pada Wi-Fi, 96% dari waktunya adalah upacara sebelum data.
+Catatan jujur: OTAA (cara aman mendaftarkan node) punya pertukaran join di awal — tetapi sekali saja seumur pemasangan, bukan
+tiap kirim. ABP melewatinya sama sekali. Ini persis perbedaan "sekali saat pemasangan" vs "tiap bangun" pada Zigbee.
+
+--- PAGE 25 ---
+Desain dan Aplikasi IoT 
+Mengapa LoRaWAN Hemat: Tidak Ada Asosiasi  (lanjutan)
+
+--- PAGE 26 ---
+Desain dan Aplikasi IoT 
+LoRaWAN : Kelas A, B, C
+CEPAT  ·  2,5 mnt  ·  19
+Kelas Kapan node bisa menerima Konsumsi Dipakai untuk
+A hanya 2 jendela pendek sesudah ia mengirim paling hemat 99% node berbaterai — termasuk kebun kita
+B jendela terjadwal berkala (disinkronkan beacon gateway) sedang perlu perintah dengan latensi terjamin, masih berbaterai
+C terus-menerus, kecuali saat memancar boros — perlu listrik aktuator berlistrik: lampu jalan, katup
+Kelas A wajib didukung semua perangkat. B dan C adalah tambahan.
+yang ingin selalu bisa dihubungi, harus selalu terjaga, dan harus berlistrik.
+
+--- PAGE 27 ---
+Desain dan Aplikasi IoT 
+Duty Cycle: Batasan Regulasi
+Duty cycle — batas berapa persen waktu sebuah pemancar boleh menyala, ditetapkan oleh regulator agar pita bersama tidak 
+dikuasai satu pihak.
+Batas khas pita bebas lisensi: 1% — artinya setelah memancar t detik, Anda wajib diam 99 t detik.
+SF Airtime 50 byte Jeda wajib Maksimum pesan/jam
+7 0,098 dtk 9,7 dtk 367
+10 0,616 dtk 61 dtk 58
+12 2,302 dtk 228 dtk 15,6
+Bukan meerupakan batas fisika. Radionya sanggup. Regulasinya yang melarang.
+Dan ia menghukum SF tinggi dua kali: lebih boros energi, dan lebih sedikit jatah kirim.
+Akibat rancangan yang nyata: sistem yang "mengirim tiap 30 detik" tidak mungkin pada SF12, bukan karena baterainya
+kurang, melainkan karena ilegal. Periksa batas ini sebelum Anda menjanjikan interval pengiriman kepada klien atau penguji.
+
+--- PAGE 28 ---
+Desain dan Aplikasi IoT 
+Duty Cycle: Hukum, Bukan Fisika  (lanjutan)
+
+--- PAGE 29 ---
+Desain dan Aplikasi IoT 
+Regulasi Indonesia: 920–923 MHz
+Hal Untuk Indonesia
+Pita 920–923 MHz — hanya 3 MHz
+Rencana parameter LoRaWAN AS923-2
+Yang TIDAK boleh modul 868 MHz (Eropa) · modul 915 MHz (Amerika)
+Izin izin kelas — tidak perlu izin pita per perangkat
+Sertifikasi perangkat yang dipakai/diperdagangkan perlu sertifikat SDPPI
+Yang paling sering menjebak saat memesan modul:toko daring menjual board LoRa 868 MHz dan 915 MHz dengan harga lebih 
+murah dan stok lebih banyak. Keduanya tidak sah dipakai di sini. Pastikan Anda memesan varian 923 MHz / AS923.
+
+--- PAGE 30 ---
+Desain dan Aplikasi IoT 
+Berapa Node per Gateway?
+Yang membatasi kapasitas gateway bukan jumlah node, melainkan total 
+airtime.
+Orde besaran kasar (8 kanal, model ALOHA ±18%):
+Semua node di Pesan/jam yang tertampung Node, bila 1 pesan/jam
+SF7 ±53.000 ±53.000
+SF10 ±8.400 ±8.400
+SF12 ±2.250 ±2.250
+Satu node SF12 memakan jatah airtime setara 23 node 
+SF7.
+Akibat rancangan: node yang paling jauh — yang terpaksa memakai SF12 —
+adalah node yang paling mahal bagi seluruh jaringan, bukan hanya bagi
+dirinya sendiri. Memindahkan atau meninggikan gateway sehingga node itu
+turun ke SF9 menguntungkan semua orang.
+Angka di atas adalah orde besaran, bukan jaminan. Kapasitas nyata
+bergantung pola kirim, tabrakan, dan jumlah kanal. Yang perlu Anda perhatikan
+adalah rasionya, bukan angkanya.
+
+--- PAGE 31 ---
+Desain dan Aplikasi IoT 
+Sigfox: Ekstrem yang Lain
+LoRaWAN Sigfox
+Siapa yang membangun jaringan Anda (atau operator) operator — Anda hanya berlangganan
+Ukuran pesan sampai ±50 byte 12 byte
+Pesan per hari dibatasi duty cycle 140 uplink, 4 downlink
+Bandwidth 125 kHz 100 Hz — ultra narrowband
+Gateway sendiri? boleh tidak
+tidak ada gateway yang perlu Anda urus — tetapi Anda tidak punya jaringannya.
+12 byte itu berapa? Cukup untuk: suhu (2 byte) + kelembapan (2) + tegangan baterai (2) + status (1) + cadangan (5). Tidak 
+cukup untuk teks, nama perangkat, atau JSON.
+Kapan masuk akal: ribuan perangkat sederhana tersebar luas, di wilayah yang jaringannya sudah ada, dan Anda tidak ingin
+mengurus infrastruktur. Periksa dulu cakupan operatornya di Indonesia!
+
+--- PAGE 32 ---
+Desain dan Aplikasi IoT 
+JARINGAN SELULER
+Jaringan yang sudah ada di mana-mana — dan tagihannya tiap bulan
+
+--- PAGE 33 ---
+Desain dan Aplikasi IoT 
+NB-IoT dan LTE-M
+Keduanya berjalan di jaringan seluler yang sudah ada — menara, pita berlisensi, kartu SIM.
+NB-IoT LTE-M
+Data rate ±26–127 kbit/dtk ±300 kbit/dtk – 1 Mbit/dtk
+Ukuran pesan kecil sedang — bisa suara, bisa firmware update
+Perangkat bergerak? tidak — tidak ada handover ya — bisa dipakai di kendaraan
+Latensi detik ratusan ms
+Daya paling hemat di antara seluler lebih boros
+Dalam gedung sangat baik — +20 dB coverage enhancement baik
+Yang Anda dapat dari seluler: cakupan nasional.
+Yang Anda bayar: langganan per perangkat per bulan, selamanya.
+Dua fitur hemat daya yang perlu Anda kenal namanya: PSM (Power Saving Mode — node "menghilang" dari jaringan sampai
+ia sendiri bangun) dan eDRX (node mengecek pesan jauh lebih jarang daripada ponsel biasa). Keduanya mengerjakan hal yang 
+sama dengan kelas A LoRaWAN: membolehkan radio mati lama.
+
+--- PAGE 34 ---
+Desain dan Aplikasi IoT 
+NB-IoT dan LTE-M  (lanjutan)
+
+--- PAGE 35 ---
+Desain dan Aplikasi IoT 
+5G mMTC dan RedCap
+Istilah Artinya dalam satu kalimat
+mMTC (massive Machine-Type 
+Communications)
+salah satu dari tiga janji 5G: jutaan perangkat per km². Dalam praktik, perannya diisi NB-IoT dan LTE-M 
+yang "dibawa masuk" ke 5G
+RedCap (Reduced Capability, 5G NR-
+Light)
+5G versi disederhanakan untuk perangkat yang tidak butuh kecepatan penuh: antena lebih sedikit, 
+bandwidth lebih sempit, lebih murah dan lebih hemat
+Posisi RedCap: mengisi celah di antara NB-IoT (terlalu lambat) dan 5G penuh (terlalu mahal dan boros) — untuk kamera pengawas, 
+wearable, dan sensor industri.
+Yang perlu Anda periksa sebelum memilihnya: ketersediaan modul yang bisa dibeli dan dukungan operator di Indonesia. 
+Teknologi yang belum bisa Anda beli dan perbaiki bukan pilihan rancangan
+
+--- PAGE 36 ---
+Desain dan Aplikasi IoT 
+Berlangganan atau Membangun Sendiri
+Berlangganan (NB-IoT, LTE-M, Sigfox) Membangun sendiri (LoRaWAN)
+Biaya awal hampir nol gateway + pemasangan
+Biaya berjalan per perangkat per bulan, selamanya listrik + internet gateway
+Cakupan nasional sejak hari pertama sejauh gateway Anda
+Kalau tidak terjangkau Anda tidak bisa berbuat apa-apa tambah gateway
+Kendali & privasi data lewat operator milik Anda sepenuhnya
+Umur layanan bergantung operator (2G/3G sudah pernah dimatikan) selama Anda merawatnya
+Pertanyaannya bukan "mana yang lebih baik".
+Pertanyaannya: berapa node, berapa lama, dan siapa pemiliknya setelah diserahkan?
+
+--- PAGE 37 ---
+Desain dan Aplikasi IoT 
+Berlangganan atau Membangun Sendiri  (lanjutan)
+
+--- PAGE 38 ---
+Desain dan Aplikasi IoT 
+PERBANDINGAN
+BLOK 4
+Tujuh teknologi, satu tabel, dan kembali ke kebun
+
+--- PAGE 39 ---
+Desain dan Aplikasi IoT 
+Perbandingan Tujuh Teknologi
+Jangkauan Energi/laporan Infrastruktur yang perlu Biaya berjalan
+Wi-Fi 30 m 100 µAh access point (biasanya sudah ada) nol
+BLE 30 m 0,008 µAh ponsel/gateway di dekatnya nol
+Zigbee 30 m/hop 0,083 µAh node berlistrik tersebar nol
+LoRa (P2P) 2–10 km 1,6–31 µAh tidak ada — cukup dua modul nol
+LoRaWAN 2–10 km 1,6–31 µAh satu gateway listrik + internet gateway
+Sigfox km kecil tidak ada — milik operator langganan
+NB-IoT / LTE-M nasional sedang tidak ada — menara operator langganan per node
+Tiga kolom pertama adalah fisika. Kolom keempat adalah uang dan kepemilikan.
+Dan kolom keempat itulah yang paling sering menentukan — bukan tiga yang pertama.
+Perhatikan juga kolom energi: BLE dan Zigbee jauh lebih hemat daripada LoRa. Kalau jarak Anda cukup ditempuh Zigbee, 
+memakai LoRa adalah pemborosan 371×.
+
+--- PAGE 40 ---
+Desain dan Aplikasi IoT 
+Perbandingan Tujuh Teknologi (lanjutan)
+
+--- PAGE 41 ---
+Desain dan Aplikasi IoT 
+Pertanyaan Penentu
+Jawab berurutan. Begitu satu pertanyaan menjawab tegas, pilihan biasanya sudah mengerucut.
+# Pertanyaan Kalau jawabannya…
+1 Berapa jauh titik terjauh dari titik berlistrik terdekat? > 100 m → semua teknologi minggu lalu gugur
+2 Ada perangkat berlistrik di antaranya? tidak ada → mesh gugur juga
+3 Berapa byte per laporan, dan berapa sering? > 1 kB atau > 1× per menit → LPWAN gugur
+4 Perlu dihubungi dari server kapan saja? ya → kelas A gugur; pikirkan ulang rancangannya
+5 Berapa node, dan berapa lama sistem ini harus hidup? banyak node & lama → bangun sendiri menang
+6 Siapa pemiliknya setelah diserahkan? orang awam → hindari yang perlu dirawat
+Untuk kebun kampus: (1) 300 m → semua gugur · (2) tidak ada → mesh gugur · (3) ±20 byte, 1× per jam → LPWAN cocok · (4) 
+perintah pompa — pikirkan · (5) 15 node, bertahun-tahun → bangun sendiri · (6) petugas kebun → sederhanakan.
+
+--- PAGE 42 ---
+Desain dan Aplikasi IoT 
+Kembali ke Kebun Kampus
+15 titik · 300 m dari pos satpam · tanpa listrik · 1 laporan/jam · ≥ 1 tahun · 2 AA (2000 mAh)
+Pilihan Hasilnya
+Wi-Fi / BLE / Zigbee
+ gugur — tidak ada infrastruktur berlistrik di kebun
+LoRaWAN, 1 gateway di pos satpam
+ satu gateway menutupi seluruh kebun
+NB-IoT
+ jalan — tetapi langganan per bulan, selamanya
+Umur baterai node, 1 laporan per jam:
+SF Energi/laporan Arus rata-rata Umur
+7 1,6 µAh 0,0216 mA 10,6 tahun
+10 8,7 µAh 0,0287 mA 8,0 tahun
+12 30,8 µAh 0,0508 mA 4,5 tahun
+Dari latihan tadi, 300 m hanya butuh SF7 — dengan margin sangat longgar.
+Hasilnya Baterai berumur hingga 10,6 tahun
+bukan nodenya, melainkan self-discharge baterainya sendiri.
+
+--- PAGE 43 ---
+Desain dan Aplikasi IoT 
+Kembali ke Kebun Kampus  (lanjutan)
+
+--- PAGE 44 ---
+Desain dan Aplikasi IoT 
+Diskusi
+10 menit. Berpasangan. Pilih satu teknologi untuk tiap kasus, dan sebutkan apa yang
+dikorbankan ?
+Pilihan: Wi-Fi · BLE · Zigbee · LoRa P2P · LoRaWAN · NB-IoT / LTE-M
+1.  Pelacak ternak — 200 ekor, berpindah antar-padang sejauh 5 km, laporan posisi tiap 30 menit, baterai harus tahan 1 musim
+2.  Pemantau ketinggian air 12 sungai kecil se-kabupaten, 1 laporan/jam, tidak ada listrik, harus hidup 5 tahun
+3.  Kamera pengawas pintu gudang — kirim satu foto tiap kali pintu terbuka
+4.  Sensor getaran pada 40 mesin di satu pabrik, laporan tiap 10 detik, mesin semuanya berlistrik
+
+--- PAGE 45 ---
+Desain dan Aplikasi IoT 
+Kesalahan Umum
+Kesalahan
+ Perbaikannya
+Memakai LoRa untuk jarak 20 m karena "lebih canggih" Zigbee/BLE 371× lebih hemat. Pakai jarak yang Anda butuhkan saja
+Memakai SF12 "biar aman" Ukur dulu. SF7 sering cukup, dan 19× lebih hemat
+Percaya "jangkauan 15 km" dari brosur Tanyakan "pada asumsi apa?" — selisihnya bisa 100×
+Menjanjikan kirim tiap 30 detik pada SF12 Ilegal — duty cycle hanya mengizinkan ±15/jam
+Memesan modul LoRa 868 atau 915 MHz Indonesia 920–923 MHz
+Mengira "LPWAN = hemat daya" LPWAN hemat karena jarang kirim, bukan karena radionya murah
+Mengira LoRa = LoRaWAN Untuk 2 titik tetap, LoRa P2P lebih sederhana
+Memakai kelas C pada node berbaterai Kelas C menuntut listrik — sama seperti router mesh 
+Mengirim gambar lewat LPWAN 100 kB = 45 menit. Kirim hasilnya, bukan bahannya
+
+--- PAGE 46 ---
+Desain dan Aplikasi IoT 
+Rangkuman
+1.  Sinyal di bawah noise bisa dibaca — dengan processing gain: sebar ke N simbol, sinyal tumbuh N, noise hanya √N
+2.  Spreading factor adalah Shannon yang bisa Anda ketik — +1 SF = +2,5 dB jangkauan, data rate setengahnya
+3.  LoRa tidak hemat — LoRa jauh. Per laporan, SF12 memakan 371× energi Zigbee
+4.  Yang hemat adalah rancangannya, bukan radionya — node LPWAN bertahan tahunan karena jarang mengirim
+5.  "Jangkauan 15 km" tidak punya arti tanpa menyebut n — selisihnya bisa 100×
+6.  Duty cycle adalah hukum, bukan fisika — dan ia menghukum SF tinggi dua kali
+7.  Pilihan berlangganan vs membangun bukan keputusan teknis — ia keputusan jumlah node, umur sistem, dan kepemilikan
+
+--- PAGE 47 ---
+Desain dan Aplikasi IoT 
+Bacaan dan Minggu Depan
+INTI  ·  2 mnt  ·  40
+Bacaan sebelum pertemuan 6:
+● Perry Lea, Bab 6 — Thread, 6LoWPAN, Wi-Fi
+● Hanes dkk. (Cisco), Bab 5 — lapis jaringan untuk IoT
+● Fielding (2000), Bab 5 — gaya arsitektur REST
+● RFC 7252 — CoAP, cukup bagian 1–3
+Pertemuan 6 — Lapis Jaringan/Transport dan Arsitektur Berorientasi Sumber Daya IPv6 untuk IoT · 6LoWPAN (ingat frame 
+127 byte?) · routing RPL · UDP vs TCP · REST · CoAP sebagai REST untuk perangkat terbatas
+
